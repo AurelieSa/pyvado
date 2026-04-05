@@ -136,3 +136,27 @@ class TestPyvado(unittest.TestCase):
     self.assertIn("puts \"PYVADO_COMMAND_DONE\"\n", calls)
 
     self.assertFalse(pv.project_open())
+
+  @patch('pyvado.vivadoProcess.subprocess.Popen')
+  def test_enter_exit(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo"
+    pj_name = "goo.xdc"
+
+    with Pyvado(project_path = pj_path, project_name = pj_name) as pv:
+
+      calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+      mock_proc.stdin.flush()
+      self.assertIn(f"open_project {os.path.join(os.path.abspath(pj_path), pj_name)}\n", calls)
+      self.assertTrue(pv.project_open())
+      
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertIn(f"close_project\n", calls)
+    self.assertFalse(pv.project_open())
+    self.assertTrue(mock_proc.kill.called)

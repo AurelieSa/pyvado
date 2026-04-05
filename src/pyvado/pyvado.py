@@ -121,9 +121,7 @@ class Pyvado:
     return self
   
   def __exit__(self, exc_type, exc, tb):
-
-    if self.is_project_open:
-      self.run_command(
-        cmd = "close_project"
-      )
+    
+    if self.project_open():
+      self.close_project()
     self.__vivado_process.close()
