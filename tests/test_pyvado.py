@@ -6,8 +6,13 @@ import os
 
 class TestPyvado(unittest.TestCase):
 
-  def test_project_creation(self):
-    
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_project_creation(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.poll.return_value = None    
 
     with self.assertRaises(ValueError):
       pv = Pyvado(
