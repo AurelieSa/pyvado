@@ -28,4 +28,4 @@ jobs:
     - name: Test with pytest
       run: |
         # On lance pytest sur le dossier test/
-        pytest
+        pytest tests/unit_tests

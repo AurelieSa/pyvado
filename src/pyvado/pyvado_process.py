@@ -92,6 +92,9 @@ class PyvadoProcess:
 
         if "invalid command name" in line:
           raise PyvadoError(line)
+        
+        if "ERROR" in line:
+          raise PyvadoError(line)
 
         if "PYVADO_COMMAND_DONE" in  line:
           break

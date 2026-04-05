@@ -27,7 +27,7 @@ pip install pyvado
 - [x] run TCL command lines
 - [x] open vivado project
 - [x] adding files
-- [ ] complete deployment workflow from synthesis to device programation
+- [x] complete deployment workflow from synthesis to device programation
 - [ ] run behavioral simulation
 - [ ] generate report
 - [ ] vectorized simulation and vectorized power report
