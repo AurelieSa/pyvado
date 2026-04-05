@@ -2,7 +2,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from pyvado.vivadoProcess import VivadoProcess
-import sys
 
 class TestVivadoProcess(unittest.TestCase):
 
@@ -118,3 +117,19 @@ class TestVivadoProcess(unittest.TestCase):
 
     mock_proc.kill.assert_called_once()
     self.assertTrue(mock_proc.kill.called)
+
+  @patch('pyvado.vivadoProcess.subprocess.Popen')
+  def test_cant_send_after_close(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    vp = VivadoProcess()
+    vp.close()
+    
+    with self.assertRaises(RuntimeError):
+      vp.send("my_cmd", blocking=True)
+    
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    
+    self.assertNotIn("my_cmd", calls)

@@ -11,7 +11,7 @@ Descriptions: Vivado Python API wrapper
 import os
 from .vivadoProcess import VivadoProcess
 
-class PyVado:
+class Pyvado:
   """
   Python vivado API wrapper
 
@@ -57,9 +57,19 @@ class PyVado:
       timeout = process_timeout
     )
 
-    self.project_name = project_name
-    self.projec_path = project_path
-    self.is_project_open = False
+    if project_path == "" or project_path is None:
+      raise ValueError("no project path") 
+    
+    if len(project_name) < 4 :
+      raise ValueError("invalid project name")
+
+    if project_name[-4:] != ".xdc":
+      raise ValueError("project name must finish with xdc extension")
+    
+
+    self.__project_name = project_name
+    self.__projec_path = os.path.abspath(project_path)
+    self.__is_project_open = False
 
   def run_command(self, cmd : str | list[str], blocking : bool = True):
     """
@@ -83,10 +93,28 @@ class PyVado:
     """
     
     self.run_command(
-      cmd = f"open_project {self.projec_path}/{self.project_name}",
+      cmd = f"open_project {os.path.join(self.__projec_path, self.__project_name)}",
       blocking = True
     )
-    self.is_project_open = True
+    self.__is_project_open = True
+
+  def close_project(self):
+    """
+    close vivado project
+    """
+    
+    self.run_command(
+      cmd = "close_project",
+      blocking = True
+    )
+    self.__is_project_open = False
+
+  def project_open(self) -> bool:
+    """
+    return flag if vivado project is open
+    """
+    
+    return self.__is_project_open 
 
   def __enter__(self):
     self.open_project()

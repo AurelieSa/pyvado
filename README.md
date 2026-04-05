@@ -24,7 +24,8 @@ pip install pyvado
 ## Features
 
 - [x] open vivado project
-- [ ] run TCL command lines
+- [x] run TCL command lines
+- [x] open vivado project
 - [ ] adding files
 - [ ] complete deployment workflow from synthesis to device programation
 - [ ] run behavioral simulation

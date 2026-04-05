@@ -66,6 +66,9 @@ class VivadoProcess:
       wait for the end of command line execution if True
     """
 
+    if self.__process.poll() is not None:
+      raise RuntimeError("Vivado has been killed")
+
     start_time = time.time()
 
     if isinstance(cmd, list):
@@ -80,9 +83,6 @@ class VivadoProcess:
 
     if blocking:
       while True:
-
-        if self.__process.poll() is not None:
-          raise RuntimeError("Vivado has been killed")
         
         if time.time() - start_time > self.__timeout:
           raise TimeoutError("Command execution duration has exceed timeout")
