@@ -1,7 +1,7 @@
 
 # Pyvado
 
-![Python Tests](https://https://github.com/AurelieSa/pyvado/actions/workflows/python-tests.yml/badge.svg)
+![Python Tests](https://github.com/AurelieSa/pyvado/actions/workflows/python-tests.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
 ![License](https://img.shields.io/badge/license-GPL--3.0-red?style=flat-square)
 
