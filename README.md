@@ -3,7 +3,7 @@
 
 ![Python Tests](https://https://github.com/AurelieSa/pyvado/actions/workflows/python-tests.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue)
-![Status](https://img.shields.io/badge/status-WIP-orange)
+![License](https://img.shields.io/badge/license-GPL--3.0-red?style=flat-square)
 
 Python Vivado API
 
