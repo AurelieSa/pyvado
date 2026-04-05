@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Pyvado"
+version = "0.1.0"
+authors = [
+  {name="AurelieSa"}
+]
+description = "Python vivado control API"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "GPL-3.0-only"}
+
+
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyvado"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
