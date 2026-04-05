@@ -1,3 +1,4 @@
 
 from .pyvado import *
-from .vivadoProcess import *
+from .pyvado_process import *
+from .pyvado_error import *

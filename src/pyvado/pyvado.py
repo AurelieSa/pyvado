@@ -9,7 +9,8 @@ Descriptions: Vivado Python API wrapper
 """
 
 import os
-from .vivadoProcess import VivadoProcess
+from .pyvado_process import PyvadoProcess
+from .pyvado_error import PyvadoError
 
 class Pyvado:
   """
@@ -21,6 +22,10 @@ class Pyvado:
     run vivado command line(s)
   open_project()
     open vivado project
+  close_project()
+    close vivado project
+  project_open() -> bool:
+    return flag if vivado project is open
 
   Attributes
   ----------
@@ -52,7 +57,7 @@ class Pyvado:
     """
 
 
-    self.__vivado_process = VivadoProcess(
+    self.__vivado_process = PyvadoProcess(
       vivado_command = vivado_command,
       timeout = process_timeout
     )
@@ -63,8 +68,8 @@ class Pyvado:
     if len(project_name) < 4 :
       raise ValueError("invalid project name")
 
-    if project_name[-4:] != ".xdc":
-      raise ValueError("project name must finish with xdc extension")
+    if project_name[-4:] != ".xpr":
+      raise ValueError("project name must finish with xpr extension")
     
 
     self.__project_name = project_name
@@ -121,7 +126,44 @@ class Pyvado:
     return self
   
   def __exit__(self, exc_type, exc, tb):
-    
+
     if self.project_open():
       self.close_project()
     self.__vivado_process.close()
+
+  def add_file(self, file_path : str, synth_only : bool = False, simu_only : bool = False):
+    """
+    Add file to vivado project
+
+    Parameters
+    ----------
+    file_path : str
+      path of file to add
+    synth_only : bool = False
+      added file will be available only for synthesis
+    simu_only : bool = False
+      added file will be available only for simulation
+    """
+
+    if not self.project_open():
+      raise PyvadoError("project must be open to add file")
+
+    if synth_only and simu_only:
+      raise ValueError("a file must be at least in simulation or synthesis")
+    
+    file_path = os.path.abspath(file_path)
+
+    cmd = [
+      f"add_files -norecurse \"{file_path}\"",
+      "update_compile_order"
+    ]
+
+    if synth_only:
+      cmd.append(f"set_property used_in_simulation false [get_files {file_path}]")
+    elif simu_only:
+      cmd.append(f"set_property used_in_synthesis false [get_files {file_path}]")
+
+    self.run_command(
+      cmd = cmd,
+      blocking = True
+    )
