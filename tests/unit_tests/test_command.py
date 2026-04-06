@@ -15,8 +15,7 @@ class TestPyvadoCommand(unittest.TestCase):
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
-      project_path = "foo/",
-      project_name = "foo.xpr"
+      project_path = "foo/foo.xpr"
     )
     pv.run_command("foo_command", blocking = False)
 
@@ -36,8 +35,7 @@ class TestPyvadoCommand(unittest.TestCase):
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
-      project_path = "foo/",
-      project_name = "foo.xpr"
+      project_path = "foo/foo.xpr"
     )
     pv.run_command("foo_command", blocking = True)
 
@@ -48,3 +46,18 @@ class TestPyvadoCommand(unittest.TestCase):
     self.assertIn("foo_command\n", calls)
     self.assertIn("puts \"PYVADO_COMMAND_DONE\"\n", calls)
     self.assertTrue(any("PYVADO_COMMAND_DONE" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_read(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "some results\n"
+    mock_proc.poll.return_value = None
+
+    pv = Pyvado(
+      project_path = "foo/foo.xpr"
+    )
+    
+    self.assertEqual(pv.read_output(), "some results\n")

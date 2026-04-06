@@ -17,8 +17,7 @@ class TestPyvadoOpen(unittest.TestCase):
 
     with self.assertRaises(ValueError):
       pv = Pyvado(
-        project_path = "",
-        project_name = "goo.xpr"
+        project_path = ""
       )
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
@@ -31,8 +30,7 @@ class TestPyvadoOpen(unittest.TestCase):
 
     with self.assertRaises(ValueError):
       pv = Pyvado(
-        project_path = "foo",
-        project_name = "goo.xdc"
+        project_path = "foo/goo.xdc"
       )
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
@@ -44,25 +42,22 @@ class TestPyvadoOpen(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo"
-    pj_name = "goo.xpr"
-
+    pj_path = "./foo/goo.xpr"
     pv = Pyvado(
-      project_path = pj_path,
-      project_name = pj_name
+      project_path = pj_path
     )
     
-    pv.open_project()
+    pv.project_manager.open_project()
 
     self.assertTrue(mock_proc.stdout.readline.called)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
 
-    self.assertIn(f"open_project {os.path.join(os.path.abspath(pj_path), pj_name)}\n", calls)
+    self.assertIn(f"open_project {os.path.abspath(pj_path)}\n", calls)
     self.assertIn("puts \"PYVADO_COMMAND_DONE\"\n", calls)
     self.assertTrue(any("PYVADO_COMMAND_DONE" in s for s in calls))
 
-    self.assertTrue(pv.project_open())
+    self.assertTrue(pv.session.is_project_open())
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_close_project(self, mock_popen):
@@ -73,17 +68,15 @@ class TestPyvadoOpen(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo"
-    pj_name = "goo.xpr"
+    pj_path = "./foo/goo.xpr"
 
     pv = Pyvado(
-      project_path = pj_path,
-      project_name = pj_name
+      project_path = pj_path
     )
     
-    pv.open_project()
+    pv.project_manager.open_project()
     mock_proc.stdin.flush()
-    pv.close_project()
+    pv.project_manager.close_project()
 
     self.assertTrue(mock_proc.stdout.readline.called)
 
@@ -92,7 +85,7 @@ class TestPyvadoOpen(unittest.TestCase):
     self.assertIn(f"close_project\n", calls)
     self.assertIn("puts \"PYVADO_COMMAND_DONE\"\n", calls)
 
-    self.assertFalse(pv.project_open())
+    self.assertFalse(pv.session.is_project_open())
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_enter_exit(self, mock_popen):
@@ -103,17 +96,40 @@ class TestPyvadoOpen(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo"
-    pj_name = "goo.xpr"
+    pj_path = "./foo/goo.xpr"
 
-    with Pyvado(project_path = pj_path, project_name = pj_name) as pv:
+    with Pyvado(project_path = pj_path) as pv:
 
       calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
       mock_proc.stdin.flush()
-      self.assertIn(f"open_project {os.path.join(os.path.abspath(pj_path), pj_name)}\n", calls)
-      self.assertTrue(pv.project_open())
+      self.assertIn(f"open_project {os.path.abspath(pj_path)}\n", calls)
+      self.assertTrue(pv.session.is_project_open())
       
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertIn(f"close_project\n", calls)
-    self.assertFalse(pv.project_open())
+    self.assertFalse(pv.session.is_project_open())
     self.assertTrue(mock_proc.kill.called)
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_toplevel(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    module_name = "boo"
+
+    pv = Pyvado(project_path = pj_path)
+    pv.project_manager.open_project()
+
+    mock_proc.stdout.readline.reset_mock()
+
+    pv.project_manager.set_toplevel(module_name)
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any(f"set_property top {module_name} [current_fileset]\n" in s for s in calls))
+    self.assertTrue(any(f"update_compile_order" in s for s in calls))

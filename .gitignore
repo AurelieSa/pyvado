@@ -208,3 +208,5 @@ __marimo__/
 
 *.log
 *.jou
+
+/tests/integration_tests/pyvado_integration_test_project
