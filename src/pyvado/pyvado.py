@@ -72,6 +72,11 @@ class Pyvado:
       pyvado_session = self.session
     )
 
+    self.file_manager = FileManager(
+      vivado_process = self.__vivado_process,
+      pyvado_session = self.session
+    )
+
   def run_command(self, cmd : str | list[str], blocking : bool = True):
     """
     run vivado command line(s)
