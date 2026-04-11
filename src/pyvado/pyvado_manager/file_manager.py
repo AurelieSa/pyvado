@@ -1,7 +1,7 @@
 """
 File name: file_manager
 Author: aureliesa
-Version: 0.1.0
+Version: 0.2.0
 License: GPL-3.0-or-later
 Contact: aurelie.saulq@proton.me
 Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib, shlex
@@ -26,16 +26,20 @@ class FileManager(PyvadoManager):
   
   Methods
   -------
-  add_file(file_path : str, synth_only : bool = False, sim_only : bool = False, import_file : bool =False, force : bool =True)
-    Add file on vivado project. Function detect if the file is a constraint file
-  add_simulation_file(file_path : str, import_file : bool = False, force : bool = True)
+  add_file(file_path : str | list[str], used_in_synth : bool = True, used_in_sim : bool = True, import_file : bool =False, force : bool =True)
+    Add file(s) on vivado project. Function detect if the file is a constraint file
+  change_property(file_path : str | list[str], used_in_synth : bool = True, used_in_sim : bool = True)
+    change file property
+  add_directory(directory_path : str, used_in_synth : bool = True, used_in_sim : bool = True, import_file : bool =False, force : bool =True)
+    Add all files in directory and subdirectory
+  add_simulation_file(self, file_path : str, import_file : bool = False, force : bool = True)
     Add simulation only file
   add_constraint_file(file_path : str, import_file : bool = False, force : bool = True)
     Add constraint file
   remove_file(file_name : str, delete_from_disk : bool = False)
-    Remove file from vivado project
-  get_files() -> list[str]
-    get files from vivado project
+    remove file from vivado projectt
+  get_files(self) -> list[str]
+    get files in vivado project
   """
 
   SUPPORTED_FILE_EXTENSIONS = [
@@ -70,59 +74,165 @@ class FileManager(PyvadoManager):
       pyvado_session = pyvado_session
     )
 
-  def add_file(self, file_path : str, synth_only : bool = False, sim_only : bool = False, import_file : bool =False, force : bool =True):
+  def add_file(self, file_path : str | list[str], used_in_synth : bool = True, used_in_sim : bool = True, import_file : bool =False, force : bool =True):
     """
-    Add file on vivado project. Function detect if the file is a constraint file
+    Add file(s) on vivado project. Function detect if the file is a constraint file
 
     Parameters
     ----------
-    file_path : str
+    file_path : str | [str]
       path of file to add
-    synth_only : bool
-      the added file will be only available for synthesis
-    sim_only : bool
-      the added file will be only available for simulation
-    import_file : bool
+    used_in_synth : bool = Trie
+      the added file will be available for synthesis
+    used_in_sim : bool = True
+      the added file will be available for simulation
+    import_file : bool = False
       the added file will be copy in the vivado project repo
-    force : bool
+    force : bool = True+
       force the file to be add if the file already exist
+
+    Errors
+    ------
+    ValueError
+      file must be available at least for synhtesis or simulation
+    PyvadoError
+      project is not open
     """
 
-    if synth_only and sim_only:
+    if not used_in_synth and not used_in_sim:
       raise ValueError("a file must be at least in simulation or synthesis")
     
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open to add files")
     
-    file_path = Path(file_path).resolve()
+    if not isinstance(file_path, list):
+      file_path = [file_path]
 
-    if file_path.suffix not in self.SUPPORTED_FILE_EXTENSIONS:
-      raise PyvadoError(f"{file_path.suffix} is not supported")
+    design_files = []
+    constrainst_files = []
+    
+    for f in file_path:
+      path = Path(f).resolve()
+
+      if not path.suffix in self.SUPPORTED_FILE_EXTENSIONS:
+        raise PyvadoError(f"{path.suffix} extension is not supported")
+
+      if not path.exists():
+        raise PyvadoError(f"{f} does not exists")
+      
+      if path.suffix == ".xdc" or path.suffix == ".sdc":
+        constrainst_files.append(str(path))
+      else:
+        design_files.append(str(path))
+
+    force = '-force' if force else ''
+    file = "import_files" if import_file else "add_files"
 
     cmd = []
+      
+    if design_files != []:
+      files = ' '.join(design_files)
+      cmd.append(f"{file} -norecurse {force} {files}")
+      cmd.append(f"set_property used_in_synthesis {used_in_synth} [get_files {{{files}}}]")
+      cmd.append(f"set_property used_in_simulation {used_in_sim} [get_files {{{files}}}]")
+    
+    if constrainst_files != []:
+      files = ' '.join(constrainst_files)
+      cmd.append(f"{file} -filesets constrs_1 -norecurse {force} {files}")
 
-    if file_path.suffix == ".xdc":
-      if import_file:
-        cmd.append(f"import_files -fileset constrs_1 -norecurse{' -force' if force else ''} {file_path}")
-      else:
-        cmd.append(f"add_files -fileset constrs_1 -norecurse{' -force' if force else ''} {file_path}")
-    else:
-      if import_file:
-        cmd.append(f"import_files -norecurse{' -force' if force else ''} {file_path}")
-      else:
-        cmd.append(f"add_files -norecurse{' -force' if force else ''} {file_path}")
 
-      cmd.append("update_compile_order")
+    cmd.append("update_compile_order")
 
-      if synth_only:
-        cmd.append(f"set_property used_in_simulation false [get_files {file_path}]")
-      elif sim_only:
-        cmd.append(f"set_property used_in_synthesis false [get_files {file_path}]")
 
     self._vivado_process.send(
       cmd = cmd,
       blocking = True
     )
+
+  def change_property(self, file_path : str | list[str], used_in_synth : bool = True, used_in_sim : bool = True):
+    """
+    change file property
+
+    Parameters
+    ----------
+    file_path : str | list[str]
+      file path
+    used_in_synth : bool = True
+      file will be available for synthesis
+    used_in_sim : bool = True
+      file  will be available for simulation
+
+    Errors
+    ------
+    ValueError
+      file must be available at least for synhtesis or simulation
+    PyvadoError
+      project is not open
+    """
+
+    if not used_in_synth and not used_in_sim:
+      raise ValueError("a file must be at least in simulation or synthesis")
+    
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open to add files")
+
+    files = self.get_files()
+
+    if not isinstance(file_path, list):
+      file_path = [file_path]
+
+    file_path = [Path(f).resolve() for f in file_path]
+
+    if any(f.suffix == ".xdc" for f in file_path):
+      return
+
+    for f in file_path:
+      if not str(f) in files:
+        raise PyvadoError(f"{f} is not into the project")
+      
+    files = ' '.join([str(f) for f in file_path])
+    
+    self._vivado_process.send([
+      f"set_property used_in_synthesis {used_in_synth} [get_files {{{files}}}]",
+      f"set_property used_in_simulation {used_in_sim} [get_files {{{files}}}]"
+    ])
+
+  def add_directory(self, directory_path : str, used_in_synth : bool = True, used_in_sim : bool = True, import_file : bool =False, force : bool =True):
+    """
+    Add all files in directory and subdirectory
+
+    Parameters
+    ----------
+    directory_path : str
+      directoy path
+    used_in_synth : bool = True
+      files will be available for synthesis
+    used_in_sim : bool = Truee
+      files will be available for simulation
+    import_file : bool = False
+      files will be copy on loval project
+    force : bool = True
+      if files already exist, files will be replace
+
+    Errors
+    ------
+    ValueError
+      directory path deos not exist
+    ValueError
+      directory_path is not a directory
+    """
+
+    directory_path = Path(directory_path).resolve()
+
+    if not directory_path.exists():
+      raise ValueError(f"{directory_path} does not exist")
+    
+    if not directory_path.is_dir():
+      raise ValueError(f"{directory_path} is not a directory")
+    
+    files = [f for f in directory_path.rglob("*") if f.is_file() and f.suffix in self.SUPPORTED_FILE_EXTENSIONS]
+
+    self.add_file(file_path=files, used_in_synth=used_in_synth, used_in_sim=used_in_sim, force=force, import_file=import_file)  
 
   def add_simulation_file(self, file_path : str, import_file : bool = False, force : bool = True):
     """
@@ -140,8 +250,8 @@ class FileManager(PyvadoManager):
     
     self.add_file(
       file_path=file_path,
-      synth_only=False,
-      sim_only=True,
+      used_in_synth=False,
+      used_in_sim=True,
       import_file=import_file,
       force=force
     )
@@ -158,6 +268,11 @@ class FileManager(PyvadoManager):
       the added file will be copy in the vivado project repo
     force : bool
       force the file to be add if the file already exist
+
+    Errors
+    ------
+    ValueError
+      extension must be .xdc or .sdc
     """
     
     sfx = Path(file_path).suffix
@@ -166,8 +281,8 @@ class FileManager(PyvadoManager):
     
     self.add_file(
       file_path=file_path,
-      synth_only=False,
-      sim_only=False,
+      used_in_sim=True,
+      used_in_synth=True,
       import_file=import_file,
       force=force  
     )
@@ -182,15 +297,20 @@ class FileManager(PyvadoManager):
       name of file to remove
     delete_from_disk : bool = False
       if file has been imported into the vivado project, set to true to delete this copy.
+
+    Errors
+    ------
+    PyvadoError
+      vivado project must be open
     """
 
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open to add files")
     
     cmd = [f"remove_files {file_name}"]
 
     if delete_from_disk:
-      proj_source = f"{self._pyvado_session.get_project_name()}.srcs/"
+      proj_source = f"{self._pyvado_session.project_name}.srcs/"
       files = self.get_files()
       for f in files:
         if proj_source in str(f):
@@ -209,9 +329,14 @@ class FileManager(PyvadoManager):
     -------
     list[str]
       list of files
+
+    Errors
+    ------
+    PyvadoError
+      vivado project must be open
     """
 
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open to add files")
 
     self._vivado_process.send("puts [get_files]", blocking=False)

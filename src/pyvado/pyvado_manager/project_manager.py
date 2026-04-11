@@ -22,9 +22,9 @@ class ProjectManager(PyvadoManager):
 
   Methods
   -------
-  open_project()
+  open()
     open vivado project
-  close_project()
+  close()
     close vivado project
   set_toplevel()
     set top level module
@@ -50,18 +50,18 @@ class ProjectManager(PyvadoManager):
       pyvado_session = pyvado_session
     )
 
-  def open_project(self):
+  def open(self):
     """
     Open vivado project
     """
     
     self._vivado_process.send(
-      cmd = f"open_project {self._pyvado_session.get_project_path()}",
+      cmd = f"open_project {self._pyvado_session.project_path}",
       blocking = True
     )
-    self._pyvado_session.open_project()
+    self._pyvado_session.project.open()
 
-  def close_project(self):
+  def close(self):
     """
     close vivado project
     """
@@ -70,17 +70,6 @@ class ProjectManager(PyvadoManager):
       cmd = "close_project",
       blocking = True
     )
-    self._pyvado_session.close_project()
+    self._pyvado_session.project.close()
 
-  def set_toplevel(self, module_name : str):
-    """
-    setup toplevel
-    """
-
-    if not self._pyvado_session.is_project_open():
-      raise PyvadoError("project must be open")
-    
-    self._vivado_process.send([
-      f"set_property top {module_name} [current_fileset]",
-      "update_compile_order -fileset sources_1",
-    ])
+  

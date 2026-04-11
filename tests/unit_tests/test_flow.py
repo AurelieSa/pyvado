@@ -19,7 +19,7 @@ class TestPyvadoResetRun(unittest.TestCase):
     pv = Pyvado(project_path = pj_path)
 
     with self.assertRaises(PyvadoError):
-      pv.flow_manager.reset_run()
+      pv.flow.reset_run()
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -36,12 +36,12 @@ class TestPyvadoResetRun(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager.reset_run(run_name = "")
+      pv.flow.reset_run(run_name = "")
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -58,11 +58,11 @@ class TestPyvadoResetRun(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.reset_run()
+    pv.flow.reset_run()
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"reset_run synth_1" in s for s in calls))
@@ -82,11 +82,11 @@ class TestPyvadoResetRun(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.reset_run(run_name = reset_run)
+    pv.flow.reset_run(run_name = reset_run)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"reset_run {reset_run}" in s for s in calls))
@@ -109,7 +109,7 @@ class TestPyvadoSynthFlow(unittest.TestCase):
     pv = Pyvado(project_path = pj_path)
 
     with self.assertRaises(PyvadoError):
-      pv.flow_manager.run_synthesis()
+      pv.flow.synthesis()
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -126,12 +126,12 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager.run_synthesis(synth_name = "")
+      pv.flow.synthesis(synth_name = "")
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -148,12 +148,12 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager.run_synthesis(num_jobs = 0)
+      pv.flow.synthesis(num_jobs = 0)
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -170,11 +170,11 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_synthesis()
+    pv.flow.synthesis()
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any("launch_runs synth_1 -jobs 32" in s for s in calls))
@@ -197,11 +197,11 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_synthesis(synth_name = synth_name)
+    pv.flow.synthesis(synth_name = synth_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"launch_runs {synth_name} -jobs 32" in s for s in calls))
@@ -224,11 +224,11 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_synthesis(num_jobs = n_jobs)
+    pv.flow.synthesis(num_jobs = n_jobs)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"launch_runs synth_1 -jobs {n_jobs}" in s for s in calls))
@@ -251,7 +251,7 @@ class TestPyvadoImplFlow(unittest.TestCase):
     pv = Pyvado(project_path = pj_path)
 
     with self.assertRaises(PyvadoError):
-      pv.flow_manager.run_implementation()
+      pv.flow.implementation()
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -268,12 +268,12 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager.run_implementation(impl_name = "")
+      pv.flow.implementation(impl_name = "")
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -290,12 +290,12 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager.run_implementation(num_jobs = 0)
+      pv.flow.implementation(num_jobs = 0)
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -312,11 +312,11 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_implementation()
+    pv.flow.implementation()
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any("launch_runs impl_1 -jobs 32" in s for s in calls))
@@ -339,11 +339,11 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_implementation(impl_name = impl_name)
+    pv.flow.implementation(impl_name = impl_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"launch_runs {impl_name} -jobs 32" in s for s in calls))
@@ -366,11 +366,11 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     pv = Pyvado(project_path = pj_path)
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_implementation(num_jobs = n_jobs)
+    pv.flow.implementation(num_jobs = n_jobs)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"launch_runs impl_1 -jobs {n_jobs}" in s for s in calls))
@@ -395,7 +395,7 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
 
 
     with self.assertRaises(PyvadoError):
-      pv.flow_manager.run_bitstream()
+      pv.flow.bitstream()
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -411,12 +411,12 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     pj_path = "./foo/goo.xpr"
 
     pv = Pyvado(project_path = pj_path)
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager.run_bitstream(impl_name = "")
+      pv.flow.bitstream(impl_name = "")
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -432,12 +432,12 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     pj_path = "./foo/goo.xpr"
 
     pv = Pyvado(project_path = pj_path)
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(ValueError):
-      pv.flow_manager. run_implementation(num_jobs = 0)
+      pv.flow. implementation(num_jobs = 0)
 
     self.assertFalse(mock_proc.stdout.readline.called)
 
@@ -453,11 +453,11 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     pj_path = "./foo/goo.xpr"
 
     pv = Pyvado(project_path = pj_path)
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_bitstream()
+    pv.flow.bitstream()
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any("launch_runs impl_1 -to_step write_bitstream -jobs 32" in s for s in calls))
@@ -479,11 +479,11 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     pj_path = "./foo/goo.xpr"
 
     pv = Pyvado(project_path = pj_path)
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_bitstream(impl_name = impl_name)
+    pv.flow.bitstream(impl_name = impl_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"launch_runs {impl_name} -to_step write_bitstream -jobs 32" in s for s in calls))
@@ -505,11 +505,11 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     pj_path = "./foo/goo.xpr"
 
     pv = Pyvado(project_path = pj_path)
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.readline.reset_mock()
 
-    pv.flow_manager.run_bitstream(num_jobs = n_jobs)
+    pv.flow.bitstream(num_jobs = n_jobs)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"launch_runs impl_1 -to_step write_bitstream -jobs {n_jobs}" in s for s in calls))

@@ -11,16 +11,16 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
       project_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
-    pv.run_command("puts [get_files]", False)
-    files = pv.read_output()
+    pv.tcl.run("puts [get_files]", False)
+    files = pv.tcl.read()
     size_before_add = len(files)
 
-    pv.file_manager.add_file("./tests/integration_tests/test_files/foo1.vhd")
+    pv.files.add_file("./tests/integration_tests/test_files/foo1.vhd")
 
-    pv.run_command("puts [get_files]", False)
-    files = pv.read_output()
+    pv.tcl.run("puts [get_files]", False)
+    files = pv.tcl.read()
 
     self.assertNotEqual(len(files), size_before_add)
 
@@ -30,23 +30,23 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
       project_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
-    pv.run_command("puts [get_files]", False)
-    files = pv.read_output()
+    pv.tcl.run("puts [get_files]", False)
+    files = pv.tcl.read()
     size_before_add = len(files)
 
-    pv.file_manager.add_file("./tests/integration_tests/test_files/foo1.vhd")
+    pv.files.add_file("./tests/integration_tests/test_files/foo1.vhd")
 
-    pv.run_command("puts [get_files]", False)
-    files = pv.read_output()
+    pv.tcl.run("puts [get_files]", False)
+    files = pv.tcl.read()
 
     self.assertNotEqual(len(files), size_before_add)
 
-    pv.file_manager.remove_file("foo1.vhd")
+    pv.files.remove_file("foo1.vhd")
 
-    pv.run_command("puts [get_files]", False)
-    files = pv.read_output()
+    pv.tcl.run("puts [get_files]", False)
+    files = pv.tcl.read()
 
     self.assertEqual(len(files),size_before_add)
 
@@ -56,21 +56,21 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
       project_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_path = "./tests/integration_tests/test_files/foo1.vhd"
 
-    pv.file_manager.add_file(file_path)
+    pv.files.add_file(file_path)
 
     file_path = os.path.abspath(file_path)
 
-    files = pv.file_manager.get_files()
+    files = pv.files.get_files()
 
     self.assertIn(file_path, files)
 
-    pv.file_manager.remove_file("foo1.vhd")
+    pv.files.remove_file("foo1.vhd")
 
-    files = pv.file_manager.get_files()
+    files = pv.files.get_files()
 
     self.assertNotIn(file_path, files)
 
@@ -80,15 +80,15 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
       project_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_path = "./tests/integration_tests/test_files/foo1.vhd"
 
     final_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.srcs/sources_1/imports/test_files/foo1.vhd"
 
-    pv.file_manager.add_file(file_path, import_file=True)
+    pv.files.add_file(file_path, import_file=True)
 
-    files = pv.file_manager.get_files()
+    files = pv.files.get_files()
 
     self.assertIn(os.path.abspath(final_path), files)
 
@@ -98,14 +98,14 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
       project_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_path = "./tests/integration_tests/test_files/foo1.vhd"
 
     final_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.srcs/sources_1/imports/test_files/foo1.vhd"
 
-    pv.file_manager.add_file(file_path, import_file=True)
+    pv.files.add_file(file_path, import_file=True)
 
-    pv.file_manager.remove_file(file_path, delete_from_disk=True)
+    pv.files.remove_file(file_path, delete_from_disk=True)
 
     self.assertFalse(os.path.exists(final_path))

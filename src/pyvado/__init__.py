@@ -1,4 +1,3 @@
 
-from .pyvado import *
-from .pyvado_process import *
-from .pyvado_error import *
+from .pyvado import Pyvado
+from .pyvado_error import PyvadoError

@@ -1,130 +1,705 @@
-# import unittest
-# from unittest.mock import MagicMock, patch
-# from pyvado import Pyvado, PyvadoError
+import unittest
+from unittest.mock import MagicMock, patch
+from pyvado import Pyvado, PyvadoError
+import os
 
-# class TestPyvadoProgramDevice(unittest.TestCase):
+class TestPyvadoHardwareManager(unittest.TestCase):
 
-#   @patch('pyvado.pyvado_process.subprocess.Popen')
-#   def test_cant_program_device_when_project_close(self, mock_popen):
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_open_hardware_manager_when_project_close(self, mock_popen):
 
-#     mock_proc = MagicMock()
-#     mock_popen.return_value = mock_proc
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-#     mock_proc.poll.return_value = None
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
-#     pj_path = "./foo"
-#     pj_name = "goo.xpr"
+    pj_path = "./foo/goo.xpr"
 
-#     pv = Pyvado(project_path = pj_path, project_name = pj_name)
+    pv = Pyvado(pj_path)
 
-#     with self.assertRaises(PyvadoError):
-#       pv.program_device(top_module = "foo")
+    pv.hardware.open_hardware()
 
-#     self.assertFalse(mock_proc.stdout.readline.called)
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("open_hw_manager" in s for s in calls))
+    
 
-#   @patch('pyvado.pyvado_process.subprocess.Popen')
-#   def test_cant_program_device_when_top_module_is_empty(self, mock_popen):
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_open_hardware_manager_when_project_open(self, mock_popen):
 
-#     mock_proc = MagicMock()
-#     mock_popen.return_value = mock_proc
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-#     mock_proc.poll.return_value = None
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
-#     pj_path = "./foo"
-#     pj_name = "goo.xpr"
+    pj_path = "./foo/goo.xpr"
 
-#     pv = Pyvado(project_path = pj_path, project_name = pj_name)
-#     pv.open_project()
+    pv = Pyvado(pj_path)
+    pv.project.open()
 
-#     mock_proc.stdout.readline.reset_mock()
+    pv.hardware.open_hardware()
 
-#     with self.assertRaises(ValueError):
-#       pv.program_device(top_module = "")
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("open_hw_manager" in s for s in calls))
 
-#     self.assertFalse(mock_proc.stdout.readline.called)
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_hw_is_open_after_open_hardware(self, mock_popen):
 
-#   @patch('pyvado.pyvado_process.subprocess.Popen')
-#   def test_cant_program_device_when_impl_name_is_empty(self, mock_popen):
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     mock_proc = MagicMock()
-#     mock_popen.return_value = mock_proc
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
-#     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-#     mock_proc.poll.return_value = None
+    pj_path = "./foo/goo.xpr"
 
-#     pj_path = "./foo"
-#     pj_name = "goo.xpr"
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
 
-#     pv = Pyvado(project_path = pj_path, project_name = pj_name)
-#     pv.open_project()
+    self.assertTrue(pv.session.hardware.is_open())
 
-#     mock_proc.stdout.readline.reset_mock()
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_hw_is_close_after_close_hardware(self, mock_popen):
 
-#     with self.assertRaises(ValueError):
-#       pv.program_device(top_module = "module", impl_name = "")
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     self.assertFalse(mock_proc.stdout.readline.called)
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
-#   @patch('pyvado.pyvado_process.subprocess.Popen')
-#   def test_program_device_default(self, mock_popen):
+    pj_path = "./foo/goo.xpr"
 
-#     mock_proc = MagicMock()
-#     mock_popen.return_value = mock_proc
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.close_hardware()
 
-#     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-#     mock_proc.poll.return_value = None
+    self.assertFalse(pv.session.hardware.is_open())
 
-#     pj_path = "./foo"
-#     pj_name = "goo.xpr"
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("close_hw_manager" in s for s in calls))
 
-#     path = f"{os.path.abspath(pj_path)}/goo.runs/impl_1/module.bit"
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_no_command_send_if_hw_is_already_close(self, mock_popen):
 
-#     pv = Pyvado(project_path = pj_path, project_name = pj_name)
-#     pv.open_project()
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     mock_proc.stdout.readline.reset_mock()
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
-#     pv.program_device(top_module = "module")
+    pj_path = "./foo/goo.xpr"
 
-#     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-#     self.assertTrue(any("open_hw_manager" in s for s in calls))
-#     self.assertTrue(any("connect_hw_server" in s for s in calls))
-#     self.assertTrue(any("current_hw_target" in s for s in calls))
-#     self.assertTrue(any(f"set_property PROGRAM.FILE {path}" in s for s in calls))
-#     self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+    pv = Pyvado(pj_path)
+    
+    pv.hardware.close_hardware()
 
-#     self.assertTrue(mock_proc.stdout.readline.called)
+    self.assertFalse(pv.session.hardware.is_open())
 
-#   @patch('pyvado.pyvado_process.subprocess.Popen')
-#   def test_program_device_other_impl_name(self, mock_popen):
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("close_hw_manager" in s for s in calls))
 
-#     mock_proc = MagicMock()
-#     mock_popen.return_value = mock_proc
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_cant_connect_server_if_hardware_close(self, mock_popen):
 
-#     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-#     mock_proc.poll.return_value = None
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     pj_path = "./foo"
-#     pj_name = "goo.xpr"
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
-#     impl_name = "impl_name"
+    pj_path = "./foo/goo.xpr"
 
-#     path = f"{os.path.abspath(pj_path)}/goo.runs/{impl_name}/module.bit"
+    pv = Pyvado(pj_path)
 
-#     pv = Pyvado(project_path = pj_path, project_name = pj_name)
-#     pv.open_project()
+    with self.assertRaises(PyvadoError):
+      pv.hardware.connect_server()
 
-#     mock_proc.stdout.readline.reset_mock()
+    self.assertFalse(pv.session.hw_server.is_open())
 
-#     pv.program_device(top_module = "module", impl_name = impl_name)
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_connect_server(self, mock_popen):
 
-#     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-#     self.assertTrue(any("open_hw_manager" in s for s in calls))
-#     self.assertTrue(any("connect_hw_server" in s for s in calls))
-#     self.assertTrue(any("current_hw_target" in s for s in calls))
-#     self.assertTrue(any(f"set_property PROGRAM.FILE {path}" in s for s in calls))
-#     self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
 
-#     self.assertTrue(mock_proc.stdout.readline.called)
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+
+    pv.hardware.connect_server()
+
+    self.assertTrue(pv.session.hw_server.is_open())
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("connect_hw_server" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_connect_server_with_other_url(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+
+    pv.hardware.connect_server(url = "foo")
+
+    self.assertTrue(pv.session.hw_server.is_open())
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("connect_hw_server -url foo" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_disconnect_server(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+
+    pv.hardware.connect_server()
+    pv.hardware.disconnect_server()
+
+    self.assertFalse(pv.session.hw_server.is_open())
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("disconnect_server" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_disconnect_server_not_call_if_server_not_open(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+
+    pv.hardware.disconnect_server()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("disconnect_server" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_cant_open_target_if_server_is_not_connected(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+
+    with self.assertRaises(PyvadoError):
+      pv.hardware.open_target()
+
+    self.assertFalse(pv.session.target.is_open())
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_open_target_after_hw_server_is_connected(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+
+    pv.hardware.open_target()
+
+    self.assertTrue(pv.session.target.is_open())
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("open_hw_target" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_close_target_after_open_it(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+
+    pv.hardware.open_target()
+    pv.hardware.close_target()
+
+    self.assertFalse(pv.session.target.is_open())
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("close_hw_target" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_no_command_send_if_target_is_already_close(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+
+    pv.hardware.close_target()
+
+    self.assertFalse(pv.session.target.is_open())
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("close_hw_target" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream_fail_if_hw_is_close(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+
+    with self.assertRaises(PyvadoError):
+      pv.hardware.set_bitstream("foo.bit")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream_fail_if_wrong_format(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    with self.assertRaises(ValueError):
+      pv.hardware.set_bitstream("foo.goo")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream_fail_if_file_does_not_exists(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    with self.assertRaises(PyvadoError):
+      pv.hardware.set_bitstream("foo.bit")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    pv.hardware.set_bitstream(bitstream_file)
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_program_device_fail_if_target_not_open(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    
+    with self.assertRaises(PyvadoError):
+      pv.hardware.program_device()
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_program_device(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    pv.hardware.program_device()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream_auto_detect_project_close(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pj_path = "./foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    with self.assertRaises(PyvadoError):
+      pv.hardware.set_bitstream()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream_auto_detect_project_open_no_bitstream(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    with self.assertRaises(PyvadoError):
+      pv.hardware.set_bitstream()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_set_bitstream_auto_detect_project_open_with_bitstream(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    pv.hardware.set_bitstream()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_deploy_call_every_function(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+    
+    pv.hardware.deploy()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("open_hw_manager" in s for s in calls))
+    self.assertTrue(any("connect_hw_server" in s for s in calls))
+    self.assertTrue(any("open_hw_target" in s for s in calls))
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_deploy_call_every_function_with_good_parameters(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo2.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+    
+    pv.hardware.deploy(bitstream_path=bitstream_file, server_url="goo")
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertTrue(any("open_hw_manager" in s for s in calls))
+    self.assertTrue(any("connect_hw_server -url goo" in s for s in calls))
+    self.assertTrue(any("open_hw_target" in s for s in calls))
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+  
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_deploy_dont_reopen_hardware_if_already_open(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+    pv.hardware.open_hardware()
+
+    mock_proc.stdin.write.reset_mock()
+    
+    pv.hardware.deploy()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("open_hw_manager" in s for s in calls))
+    self.assertTrue(any("connect_hw_server" in s for s in calls))
+    self.assertTrue(any("open_hw_target" in s for s in calls))
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_deploy_dont_reconnect_server_if_already_connected(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+
+    mock_proc.stdin.write.reset_mock()
+    
+    pv.hardware.deploy()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("open_hw_manager" in s for s in calls))
+    self.assertFalse(any("connect_hw_server" in s for s in calls))
+    self.assertTrue(any("open_hw_target" in s for s in calls))
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_deploy_dont_reopen_target_if_already_open(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+
+    mock_proc.stdin.write.reset_mock()
+    
+    pv.hardware.deploy()
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("open_hw_manager" in s for s in calls))
+    self.assertFalse(any("connect_hw_server" in s for s in calls))
+    self.assertFalse(any("open_hw_target" in s for s in calls))
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_deploy_reset_bitstream_if_already_set(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pj_path = "foo/goo.xpr"
+
+    bitstream_file1 = "./tests/unit_tests/files/foo.bit"
+    bitstream_file2 = "./tests/unit_tests/files/foo.bit"
+
+    pv = Pyvado(pj_path)
+    pv.project.open()
+
+    pv.hardware.open_hardware()
+    pv.hardware.connect_server()
+    pv.hardware.open_target()
+    pv.hardware.set_bitstream(bitstream_file1)
+
+    mock_proc.stdin.write.reset_mock()
+    
+    pv.hardware.deploy(bitstream_file2)
+
+    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    self.assertFalse(any("open_hw_manager" in s for s in calls))
+    self.assertFalse(any("connect_hw_server" in s for s in calls))
+    self.assertFalse(any("open_hw_target" in s for s in calls))
+    self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file2)}}} [current_hw_device]" in s for s in calls))
+    self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))

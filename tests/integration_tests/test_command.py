@@ -8,7 +8,7 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
 
     proc = Pyvado("foo.xpr")
 
-    proc.run_command("puts \"foo\"")
+    proc.tcl.run("puts \"foo\"")
 
     self.assertTrue(True)
 
@@ -17,7 +17,7 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
     proc = Pyvado("foo.xpr")
 
     with self.assertRaises(PyvadoError):
-      proc.run_command("pust \"foo\"")
+      proc.tcl.run("pust \"foo\"")
 
 
   def test_run_error_command(self):
@@ -25,4 +25,4 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
     proc = Pyvado("foo.xpr")
 
     with self.assertRaises(PyvadoError):
-      proc.run_command("launch_runs foo")
+      proc.tcl.run("launch_runs foo")

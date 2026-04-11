@@ -1,7 +1,7 @@
 """
 File name: flow_manager
 Author: aureliesa
-Version: 0.1.0
+Version: 0.2.0
 License: GPL-3.0-or-later
 Contact: aurelie.saulq@proton.me
 Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error
@@ -22,14 +22,20 @@ class FlowManager(PyvadoManager):
 
   Methods
   -------
+  set_toplevel(module_name : str)
+    setup toplevel
   reset_run(run_name : str = "synth_1")
     reset run
-  run_synthesis(synth_name : str = "synth_1", num_jobs : int = 32)
+  synthesis(synth_name : str = "synth_1", num_jobs : int = 32)
     Run synthesis
-  run_implementation(impl_name : str = "impl_1", num_jobs : int = 32)
+  ooc_syntheses(ooc_module_name : str, extra_option : str = "")
+    run out oof contect synthesis
+  implementation(impl_name : str = "impl_1", num_jobs : int = 32)
     run implementation
-  run_bitstream(impl_name : str = "impl_1", num_jobs : int = 32)
+  bitstream(impl_name : str = "impl_1", num_jobs : int = 32)
     run bitstream
+  run_all(synth_name : str = "synth_1", impl_name : str = "impl_1", num_jobs : int = 32, reset_before : bool = True)
+    run synthesis, implementation and generate bitstream
   """
 
   def __init__(self,
@@ -52,6 +58,19 @@ class FlowManager(PyvadoManager):
       pyvado_session = pyvado_session
     )
 
+  def set_toplevel(self, module_name : str):
+    """
+    setup toplevel
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("project must be open")
+    
+    self._vivado_process.send([
+      f"set_property top {module_name} [current_fileset]",
+      "update_compile_order -fileset sources_1",
+    ])
+
   def reset_run(self, run_name : str = "synth_1"):
     """
     reset run
@@ -62,7 +81,7 @@ class FlowManager(PyvadoManager):
       run_name to reset
     """
 
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("project must be open")
     
     if run_name == "":
@@ -71,7 +90,7 @@ class FlowManager(PyvadoManager):
     self._vivado_process.send(f"reset_run {run_name}")
 
 
-  def run_synthesis(self, synth_name : str = "synth_1", num_jobs : int = 32):
+  def synthesis(self, synth_name : str = "synth_1", num_jobs : int = 32):
     """
     Run synthesis
 
@@ -83,7 +102,7 @@ class FlowManager(PyvadoManager):
       number of jobs
     """
 
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("project must be open")
 
     if num_jobs < 1:
@@ -97,7 +116,24 @@ class FlowManager(PyvadoManager):
       f"wait_on_run {synth_name}"
     ])
 
-  def run_implementation(self, impl_name : str = "impl_1", num_jobs : int = 32):
+  def ooc_syntheses(self, ooc_module_name : str, extra_option : str = ""):
+    """
+    run out oof contect synthesis
+
+    Parameters
+    ----------
+    ooc_module_name : str
+      module name to synthesis
+    extra_option : str
+      extra command option
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    self._vivado_process.send(f"synth_design -top {ooc_module_name} -part [get_property PART [current_project]] -mode out_of_context {extra_option}")
+
+  def implementation(self, impl_name : str = "impl_1", num_jobs : int = 32):
     """
     Run implementation
 
@@ -109,7 +145,7 @@ class FlowManager(PyvadoManager):
       number of jobs
     """
 
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("project must be open")
 
     if num_jobs < 1:
@@ -123,7 +159,7 @@ class FlowManager(PyvadoManager):
       f"wait_on_run {impl_name}"
     ])
 
-  def run_bitstream(self, impl_name : str = "impl_1", num_jobs : int = 32):
+  def bitstream(self, impl_name : str = "impl_1", num_jobs : int = 32):
     """
     run bitstream generation
 
@@ -135,7 +171,7 @@ class FlowManager(PyvadoManager):
       number of jobs
     """
 
-    if not self._pyvado_session.is_project_open():
+    if not self._pyvado_session.project.is_open():
       raise PyvadoError("project must be open")
 
     if num_jobs < 1:
@@ -148,3 +184,38 @@ class FlowManager(PyvadoManager):
       f"launch_runs {impl_name} -to_step write_bitstream -jobs {num_jobs}",
       f"wait_on_run {impl_name}"
     ])
+
+  def run_all(self, synth_name : str = "synth_1", impl_name : str = "impl_1", num_jobs : int = 32, reset_before : bool = True):
+    """
+    run all flow
+
+    Parameters
+    ----------
+    synth_name : str = "synth_1"
+      synhtesis run name
+    impl_name : str = "impl_1"
+      implementation run name
+    num_jobs : int = 32
+      number of jobs
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("project must be open")
+
+    if num_jobs < 1:
+      raise ValueError("num jobs must be higher or equal than 1")
+    
+    if synth_name == "":
+      raise ValueError("synth name is not set")
+    
+    if impl_name == "":
+      raise ValueError("impl name is not set")
+    
+    if reset_before:
+      self.reset_run(run_name=synth_name)
+
+    self.synthesis(synth_name=synth_name, num_jobs=num_jobs)
+
+    self.implementation(impl_name=impl_name, num_jobs=num_jobs)
+
+    self.bitstream(impl_name=impl_name, num_jobs=num_jobs)

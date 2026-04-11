@@ -21,7 +21,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     with self.assertRaises(PyvadoError):
-      pv.file_manager.add_file("foo.vhd")
+      pv.files.add_file("foo.vhd")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_add_file_with_invalid_extension(self, mock_popen):
@@ -36,7 +36,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     with self.assertRaises(PyvadoError):
-      pv.file_manager.add_file("foo.ext")
+      pv.files.add_file("foo.ext")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_add_file_with_sim_and_synth_true(self, mock_popen):
@@ -51,7 +51,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     with self.assertRaises(ValueError):
-      pv.file_manager.add_file("foo.ext", True, True)
+      pv.files.add_file("foo.ext", True, True)
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_can_add_file_default(self, mock_popen):
@@ -66,11 +66,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name)
+    pv.files.add_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -91,11 +91,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, force=False)
+    pv.files.add_file(file_name, force=False)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -116,11 +116,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, synth_only=True)
+    pv.files.add_file(file_name, synth_only=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -141,11 +141,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, sim_only=True)
+    pv.files.add_file(file_name, sim_only=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -166,11 +166,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, import_file=True)
+    pv.files.add_file(file_name, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -191,11 +191,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, force=False, import_file=True)
+    pv.files.add_file(file_name, force=False, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -norecurse {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -216,11 +216,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, synth_only=True, import_file=True)
+    pv.files.add_file(file_name, synth_only=True, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -241,11 +241,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_file(file_name, sim_only=True, import_file=True)
+    pv.files.add_file(file_name, sim_only=True, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -266,11 +266,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_file(file_name)
+    pv.files.add_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -290,11 +290,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_file(file_name, import_file=True)
+    pv.files.add_file(file_name, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -314,11 +314,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_file(file_name, sim_only=True)
+    pv.files.add_file(file_name, sim_only=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -338,11 +338,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_file(file_name, synth_only=True)
+    pv.files.add_file(file_name, synth_only=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -362,11 +362,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_file(file_name, sim_only=True, import_file=True)
+    pv.files.add_file(file_name, sim_only=True, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -386,11 +386,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_file(file_name, synth_only=True, import_file=True)
+    pv.files.add_file(file_name, synth_only=True, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -410,11 +410,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_simulation_file(file_name)
+    pv.files.add_simulation_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(file_name)}" in s for s in calls))
@@ -435,11 +435,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.add_simulation_file(file_name, import_file=True)
+    pv.files.add_simulation_file(file_name, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -norecurse -force {os.path.abspath(file_name)}" in s for s in calls))
@@ -460,11 +460,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_constraint_file(file_name)
+    pv.files.add_constraint_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -484,11 +484,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.xdc"
 
-    pv.file_manager.add_constraint_file(file_name, import_file=True)
+    pv.files.add_constraint_file(file_name, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
@@ -508,10 +508,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = "foo/foo.xpr"
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     with self.assertRaises(ValueError):
-      pv.file_manager.add_constraint_file("foo.vhd")
+      pv.files.add_constraint_file("foo.vhd")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_remove_file_when_project_close(self, mock_popen):
@@ -527,7 +527,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     with self.assertRaises(PyvadoError):
-      pv.file_manager.remove_file("foo.vhd")
+      pv.files.remove_file("foo.vhd")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_can_remove_file(self, mock_popen):
@@ -545,11 +545,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = pj_path
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
-    pv.file_manager.remove_file(file_name)
+    pv.files.remove_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"remove_files {file_name}\n" in s for s in calls))
@@ -572,14 +572,14 @@ class TestPyvadoFileManager(unittest.TestCase):
       project_path = pj_path
     )
 
-    pv.project_manager.open_project()
+    pv.project.open()
 
     file_name = "goo.vhd"
 
     mock_proc.stdout.flush()
     mock_proc.stdout.readline.side_effect = [f"{os.path.abspath(file_path_if_copy)}\n", "PYVADO_COMMAND_DONE\n"]
 
-    pv.file_manager.remove_file(file_name, delete_from_disk=True)
+    pv.files.remove_file(file_name, delete_from_disk=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"remove_files {file_name}\n" in s for s in calls))
@@ -606,7 +606,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     with self.assertRaises(PyvadoError):
-      pv.file_manager.get_files()
+      pv.files.get_files()
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_get_file_correctly_parse(self, mock_popen):
@@ -626,11 +626,11 @@ class TestPyvadoFileManager(unittest.TestCase):
     pv = Pyvado(
       project_path = "foo/foo.xpr"
     )
-    pv.project_manager.open_project()
+    pv.project.open()
 
     mock_proc.stdout.flush()
     mock_proc.stdout.readline.return_value = '"/Volumes/Disque Dur/Photos" /usr/local/bin /home/user/image.png\n'
 
-    self.assertEqual(pv.file_manager.get_files(), correct_list)
+    self.assertEqual(pv.files.get_files(), correct_list)
 
 

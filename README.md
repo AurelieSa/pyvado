@@ -28,9 +28,9 @@ pip install pyvado
 - [x] open vivado project
 - [X] adding files
 - [x] complete deployment workflow from synthesis to device programation
-- [ ] run behavioral simulation
-- [ ] generate report
-- [ ] vectorized simulation and vectorized power report
+- [X] run behavioral simulation
+- [X] generate report
+- [X] vectorized simulation and vectorized power report
 - [ ] create vivado project
 - [ ] multiple vivado execution
 

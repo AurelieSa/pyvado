@@ -11,31 +11,34 @@ Descriptions: Vivado Python API wrapper
 from .pyvado_process import PyvadoProcess
 from .pyvado_session import PyvadoSession
 from .pyvado_manager import *
+import os
 
 class Pyvado:
   """
   Python vivado API wrapper
-
-  Methods
-  -------
-  run_command(cmd : str | list[str], blocking : bool = True)
-    run vivado command line(s)
-  read_output() -> str:
-    read vivado process output
-  
   
   Attributes
   ----------
   session : PyvadoSession
     pyvado session data structure
-  project_manager : ProjectManager
+  project : ProjectManager
     pyvado project manager
-  flow_manager : FlowManager
+  flow : FlowManager
     pyvado synthesis flow manager
+  files : FilesManager
+    project file manager
+  hardware : HardwareManager
+    vivado hardware manager
+  report : ReportManager
+    vivado report manager
+  simulator : SimulatorManager
+    vivado simulator
+  tcl : TCLManager
+    direct tcl command
   """
 
   def __init__(self,
-               project_path : str,
+               project_path : str = "",
                vivado_command : str = "vivado",
                process_timeout : int = 600
               ):
@@ -44,7 +47,7 @@ class Pyvado:
 
     Parameters
     ----------
-    project_path : str
+    project_path : str = ""
       vivado project path
     vivado_command : str = "vivado"
       vivado command line
@@ -52,62 +55,117 @@ class Pyvado:
       vivado command timeout
     """
 
+    if not os.path.exists(".pyvadoLog"):
+      os.makedirs(".pyvadoLog")
+
 
     self.__vivado_process = PyvadoProcess(
       vivado_command = vivado_command,
       timeout = process_timeout
     )
 
-    self.session = PyvadoSession(
+    self.__session = PyvadoSession(
       project_path = project_path
     )
 
-    self.project_manager = ProjectManager(
+    self.__project = ProjectManager(
       vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
-    self.flow_manager = FlowManager(
+    self.__flow = FlowManager(
       vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
-    self.file_manager = FileManager(
+    self.__files = FileManager(
       vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
-  def run_command(self, cmd : str | list[str], blocking : bool = True):
-    """
-    run vivado command line(s)
-
-    Parameters
-    ----------
-    cmd : str | list[str]
-      command line(s)
-    blocking : bool = True
-      wait for the end of command line execution if True
-    """
-    self.__vivado_process.send(
-      cmd = cmd,
-      blocking = blocking
+    self.__hardware = HardwareManager(
+      vivado_process = self.__vivado_process,
+      pyvado_session = self.session
     )
 
-  def read_output(self) -> str:
-    """
-    read vivado process output
-    """
-    
-    return self.__vivado_process.read()
+    self.__report = ReportManager(
+      vivado_process = self.__vivado_process,
+      pyvado_session = self.session
+    )
+
+    self.__simulator = SimulationManager(
+      vivado_process = self.__vivado_process,
+      pyvado_session = self.session
+    )
+
+    self.__tcl = TCLManager(
+      vivado_process = self.__vivado_process,
+      pyvado_session = self.session
+    )
+
+  @property
+  def session(self) -> PyvadoSession:
+    return self.__session
+
+  @property
+  def project(self) -> ProjectManager:
+    return self.__project
+
+  @property
+  def flow(self) -> FlowManager:
+    return self.__flow
+
+  @property
+  def files(self) -> FileManager:
+    return self.__files
+
+  @property
+  def hardware(self) -> HardwareManager:
+    return self.__hardware
+
+  @property
+  def report(self) -> ReportManager:
+    return self.__report
+
+  @property
+  def simulator(self) -> SimulationManager:
+    return self.__simulator
+  
+  @property
+  def tcl(self) -> TCLManager:
+    return self.__tcl
 
   def __enter__(self):
-    self.project_manager.open_project()
     return self
   
   def __exit__(self, exc_type, exc, tb):
 
-    if self.session.is_project_open():
-      self.project_manager.close_project()
+    if self.session.target.is_open():
+      self.hardware.close_target()
+
+    if self.session.hw_server.is_open():
+      self.hardware.disconnect_server()
+
+    if self.session.hardware.is_open():
+      self.hardware.close_hardware()
+
+    if self.session.project.is_open():
+      self.project.close()
+      
     self.__vivado_process.close()
 
+  def __delete__(self, instance):
+    if self.session.target.is_open():
+      self.hardware.close_target()
+
+    if self.session.hw_server.is_open():
+      self.hardware.disconnect_server()
+
+    if self.session.hardware.is_open():
+      self.hardware.close_hardware()
+
+    if self.session.project.is_open()():
+      self.project.close()
+      
+    self.__vivado_process.close()
   

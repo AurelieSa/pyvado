@@ -46,12 +46,18 @@ class PyvadoProcess:
     """
 
     self.__process = subprocess.Popen(
-      [vivado_command, "-mode", "tcl"],
+      [vivado_command, "-mode", "tcl", "-log", ".pyvadoLog/vivado.log", "-journal", ".pyvadoLog/vivado.jou"],
       stdin = subprocess.PIPE,
       stdout = subprocess.PIPE,
       stderr = subprocess.PIPE,
       text = True
     )
+
+    self.__process.stdin.write("puts \"PYVADO_PROCESS_OPEN\"\n")
+    self.__process.stdin.flush()
+
+    while not "PYVADO_PROCESS_OPEN" in self.__process.stdout.readline():
+      continue
 
     self.__timeout = timeout
 
@@ -93,10 +99,10 @@ class PyvadoProcess:
         if "invalid command name" in line:
           raise PyvadoError(line)
         
-        if "ERROR" in line:
+        if line.startswith("ERROR:"):
           raise PyvadoError(line)
 
-        if "PYVADO_COMMAND_DONE" in  line:
+        if line.startswith("PYVADO_COMMAND_DONE"):
           break
   
   def read(self) -> str:

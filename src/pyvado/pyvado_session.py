@@ -9,6 +9,39 @@ Descriptions: Vivado Python API wrapper
 """
 
 from pathlib import Path
+from .pyvado_error import PyvadoError
+
+class OpenState():
+  """
+  Session open Manager
+  """
+
+  def __init__(self):
+    self.__open = False
+
+  def is_open(self) -> bool:
+    """
+    return if entity is open
+
+    Returns
+    -------
+      bool
+    """
+    return self.__open
+  
+  def open(self):
+    """
+    Open entity
+    """
+
+    self.__open = True
+
+  def close(self):
+    """
+    Close entity
+    """
+    
+    self.__open = False
 
 class PyvadoSession():
   """
@@ -16,15 +49,21 @@ class PyvadoSession():
 
   Attributes
   ----------
+  project : EntityOpenManager
+    project open manager
+  hardware : EntityOpenManager
+    hardware open manager
+  target : EntityOpenManager
+    hardware target open manager
+  hw_server : EntityOpenManager
+    hardware server open manager
+  simulator : EntityOpenManager
+    simulator open manager
+  saif : EntityOpenManager
+    saif open manager
 
   Methods
   -------
-  is_project_open() -> bool
-    return if vivado project is open or not
-  open_project()
-    signal to session that project is open
-  close_project()
-    signal to session that project is close
   get_project_path() ->  Path
     return project path
   get_project_dir() -> Path
@@ -34,52 +73,69 @@ class PyvadoSession():
   """
 
   def __init__(self,
-               project_path : str
+               project_path : str = ""
               ):
     """
     Class Constructor
 
     Parameters
     ----------
-    project_path : str
-      vivado project path. Must finish by xpr extension
+    project_path : str = ""
+      vivado project path. Can be set after initialisation
     """
-    
     if project_path == "" or project_path is None:
-      raise ValueError("no project path") 
-    
-    self.__project_path = Path(project_path).resolve()
+      self.__project_path = None
+    else:
+      self.set_project_path(project_path)
 
-    if self.__project_path.suffix != ".xpr":
+    self.__project = OpenState()
+
+    self.__hardware = OpenState()
+
+    self.__target = OpenState()
+
+    self.__hw_server = OpenState()
+
+    self.__simulator = OpenState()
+
+    self.__saif = OpenState()
+
+  def set_project_path(self, path : str):
+    
+    path = Path(path).resolve()
+
+    if path.suffix != ".xpr":
       raise ValueError("project name must finish with xpr extension")
     
-    self.__is_project_open = False
+    self.__project_path = Path(path).resolve()
 
-  def is_project_open(self) -> bool:
-    """
-    return if vivado project is open or not
-
-    Returns
-    -------
-      bool
-    """
-    return self.__is_project_open
+  @property
+  def project(self) -> OpenState:
+    return self.__project
   
-  def open_project(self):
-    """
-    signal to session that project is open
-    """
-    
-    self.__is_project_open = True
+  @property
+  def hardware(self) -> OpenState:
+    return self.__hardware
+  
+  @property
+  def target(self) -> OpenState:
+    return self.__target
+  
+  @property
+  def hw_server(self) -> OpenState:
+    return self.__hw_server
+  
+  @property
+  def simulator(self) -> OpenState:
+    return self.__simulator
+  
+  @property
+  def saif(self) -> OpenState:
+    return self.__saif
 
-  def close_project(self):
-    """
-    signal to session that project is close
-    """
 
-    self.__is_project_open = False
-
-  def get_project_path(self) ->  Path:
+  @property
+  def project_path(self) ->  Path:
     """
     return vivado project path
 
@@ -87,10 +143,13 @@ class PyvadoSession():
     -------
       Path
     """
+    if self.__project_path is None:
+      raise PyvadoError("No project path")
 
     return self.__project_path
   
-  def get_project_dir(self) -> Path:
+  @property
+  def project_dir(self) -> Path:
     """
     return vivado project directory
 
@@ -98,10 +157,13 @@ class PyvadoSession():
     -------
       Path
     """
+    if self.__project_path is None:
+      raise PyvadoError("No project path")
 
     return self.__project_path.parent
   
-  def get_project_name(self) -> Path:
+  @property
+  def project_name(self) -> Path:
     """
     return vivado project name (without .xpr)
 
@@ -109,6 +171,8 @@ class PyvadoSession():
     -------
       Path
     """
+    if self.__project_path is None:
+      raise PyvadoError("No project path")
 
     return self.__project_path.stem
   
