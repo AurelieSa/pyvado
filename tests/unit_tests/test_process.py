@@ -54,6 +54,10 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc.poll.return_value = None
 
     vp = PyvadoProcess()
+
+    mock_proc.stdin.write.reset_mock()
+    mock_proc.stdout.readline.reset_mock()
+
     vp.send("my_cmd", blocking=False)
 
     self.assertFalse(mock_proc.stdout.readline.called)
@@ -65,7 +69,28 @@ class TestPyvadoProcess(unittest.TestCase):
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   @patch('pyvado.pyvado_process.time.time')
-  def test_send_timeout(self, mock_time, mock_popen):
+  def test_command_timeout(self, mock_time, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_time.side_effect = [0, 0, 70]
+
+    
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    vp = PyvadoProcess(timeout=60)
+
+    mock_proc.stdout.readline.reset_mock()
+    mock_proc.stdout.readline.return_value = "working...\n"
+
+    with self.assertRaises(TimeoutError):
+      vp.send("foo")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  @patch('pyvado.pyvado_process.time.time')
+  def test_open_timeout(self, mock_time, mock_popen):
 
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
@@ -75,10 +100,9 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "working...\n"
     mock_proc.poll.return_value = None
 
-    vp = PyvadoProcess(timeout=60)
-    
     with self.assertRaises(TimeoutError):
-      vp.send("my_cmd", blocking=True)
+      vp = PyvadoProcess(timeout=60)
+    
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_send_process_killed(self, mock_popen):
@@ -86,9 +110,13 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.poll.return_value = 1
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+    
 
     vp = PyvadoProcess()
+
+    mock_proc.poll.return_value = 1
     
     with self.assertRaises(RuntimeError):
       vp.send("my_cmd", blocking=True)
@@ -99,10 +127,12 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "some results\n"
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
     vp = PyvadoProcess()
+
+    mock_proc.stdout.readline.return_value = "some results\n"
     
     self.assertEqual(vp.read(), "some results\n")
 
@@ -111,6 +141,9 @@ class TestPyvadoProcess(unittest.TestCase):
 
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
 
     vp = PyvadoProcess()
     vp.close()
@@ -124,8 +157,13 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    
+
     vp = PyvadoProcess()
     vp.close()
+
+    mock_proc.poll.return_value = 1
     
     with self.assertRaises(RuntimeError):
       vp.send("my_cmd", blocking=True)
@@ -140,10 +178,13 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "invalid command name my_cmd"
+    
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
     vp = PyvadoProcess()
+
+    mock_proc.stdout.readline.return_value = "invalid command name my_cmd"
     
     with self.assertRaises(PyvadoError):
       vp.send("my_cmd", blocking=True)
@@ -154,10 +195,13 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "ERROR: my_cmd bad argument"
+    
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
     vp = PyvadoProcess()
+
+    mock_proc.stdout.readline.return_value = "ERROR: my_cmd bad argument"
     
     with self.assertRaises(PyvadoError):
       vp.send("my_cmd", blocking=True)

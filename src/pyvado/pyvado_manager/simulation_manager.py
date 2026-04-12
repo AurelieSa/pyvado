@@ -13,6 +13,7 @@ from ..pyvado_error import PyvadoError
 from ..pyvado_session import PyvadoSession
 from .pyvado_manager import PyvadoManager
 from pathlib import Path
+import re
 
 class SimulationManager(PyvadoManager):
   """
@@ -73,7 +74,7 @@ class SimulationManager(PyvadoManager):
     if self._pyvado_session.simulator.is_open():
 
       if self.__saif_open:
-        self._vivado_process.send("close_saif") # close saif only open by simulator
+        self.close_saif() # close saif only open by simulator
 
       self._vivado_process.send("close_sim")
       self._pyvado_session.simulator.close()
@@ -135,12 +136,14 @@ class SimulationManager(PyvadoManager):
       duration invalid format
     """
 
-    correct_time_unit = ["ps", "ns", "us", "ms", "s"]
+    pattern = r"^(all|\d+\s*(ps|ns|us|ms|s))$"
 
     if not self._pyvado_session.simulator.is_open():
       raise PyvadoError("Simulator must be open")
+    
+    duration = str(duration.lower())
 
-    if duration != "all" and not any(duration.endswith(unit) for unit in correct_time_unit):
+    if not re.match(pattern, duration):
       raise PyvadoError(f"{duration} has no correct format")
     
     self._vivado_process.send(f"run {duration}")

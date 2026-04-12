@@ -45,6 +45,8 @@ class PyvadoProcess:
       command timeout
     """
 
+    self.__timeout = timeout
+
     self.__process = subprocess.Popen(
       [vivado_command, "-mode", "tcl", "-log", ".pyvadoLog/vivado.log", "-journal", ".pyvadoLog/vivado.jou"],
       stdin = subprocess.PIPE,
@@ -53,13 +55,16 @@ class PyvadoProcess:
       text = True
     )
 
-    self.__process.stdin.write("puts \"PYVADO_PROCESS_OPEN\"\n")
+    self.__process.stdin.write("puts \"PYVADO_COMMAND_DONE\"\n")
     self.__process.stdin.flush()
 
-    while not "PYVADO_PROCESS_OPEN" in self.__process.stdout.readline():
-      continue
 
-    self.__timeout = timeout
+    start = time.time()
+    while not "PYVADO_COMMAND_DONE" in self.__process.stdout.readline():
+      if time.time() - start > self.__timeout:
+        raise TimeoutError("Command execution duration has exceed timeout")
+
+    
 
   def send(self, cmd : str | list[str], blocking : bool = True):
     """

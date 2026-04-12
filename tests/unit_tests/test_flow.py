@@ -14,9 +14,11 @@ class TestPyvadoResetRun(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
+
+    mock_proc.stdout.reset_mock()
 
     with self.assertRaises(PyvadoError):
       pv.flow.reset_run()
@@ -32,7 +34,7 @@ class TestPyvadoResetRun(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -54,7 +56,7 @@ class TestPyvadoResetRun(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -78,7 +80,7 @@ class TestPyvadoResetRun(unittest.TestCase):
 
     reset_run = "run_name"
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -93,8 +95,6 @@ class TestPyvadoResetRun(unittest.TestCase):
 
     self.assertTrue(mock_proc.stdout.readline.called)
 
-class TestPyvadoSynthFlow(unittest.TestCase):
-
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_run_synth_when_project_close(self, mock_popen):
 
@@ -104,9 +104,11 @@ class TestPyvadoSynthFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
+
+    mock_proc.stdout.readline.reset_mock()
 
     with self.assertRaises(PyvadoError):
       pv.flow.synthesis()
@@ -122,7 +124,7 @@ class TestPyvadoSynthFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -144,7 +146,7 @@ class TestPyvadoSynthFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -166,7 +168,7 @@ class TestPyvadoSynthFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -193,7 +195,7 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     synth_name = "synth_name"
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -220,7 +222,7 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     n_jobs = 12
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -235,8 +237,6 @@ class TestPyvadoSynthFlow(unittest.TestCase):
 
     self.assertTrue(mock_proc.stdout.readline.called)
 
-class TestPyvadoImplFlow(unittest.TestCase):
-
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_run_impl_when_project_close(self, mock_popen):
 
@@ -246,9 +246,11 @@ class TestPyvadoImplFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
+
+    mock_proc.stdout.reset_mock()
 
     with self.assertRaises(PyvadoError):
       pv.flow.implementation()
@@ -264,7 +266,7 @@ class TestPyvadoImplFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -286,7 +288,7 @@ class TestPyvadoImplFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -308,7 +310,7 @@ class TestPyvadoImplFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -335,7 +337,7 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     impl_name = "impl_name"
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -362,7 +364,7 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     n_jobs = 12
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
@@ -377,9 +379,6 @@ class TestPyvadoImplFlow(unittest.TestCase):
 
     self.assertTrue(mock_proc.stdout.readline.called)
 
-
-class TestPyvadoBitstreamFlow(unittest.TestCase):
-
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_run_bitstream_when_project_close(self, mock_popen):
 
@@ -389,10 +388,11 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
 
+    mock_proc.stdout.reset_mock()
 
     with self.assertRaises(PyvadoError):
       pv.flow.bitstream()
@@ -408,7 +408,7 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
     pv.project.open()
@@ -429,7 +429,7 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
     pv.project.open()
@@ -450,7 +450,7 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
     pv.project.open()
@@ -476,7 +476,7 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
 
     impl_name = "impl_name"
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
     pv.project.open()
@@ -502,7 +502,7 @@ class TestPyvadoBitstreamFlow(unittest.TestCase):
 
     n_jobs = 12
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(project_path = pj_path)
     pv.project.open()

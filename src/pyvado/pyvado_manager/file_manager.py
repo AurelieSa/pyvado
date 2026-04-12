@@ -190,7 +190,7 @@ class FileManager(PyvadoManager):
       if not str(f) in files:
         raise PyvadoError(f"{f} is not into the project")
       
-    files = ' '.join([str(f) for f in file_path])
+    files = ' '.join([f.as_posix() for f in file_path])
     
     self._vivado_process.send([
       f"set_property used_in_synthesis {used_in_synth} [get_files {{{files}}}]",

@@ -140,32 +140,19 @@ class Pyvado:
   
   def __exit__(self, exc_type, exc, tb):
 
-    if self.session.target.is_open():
+    if self.__session.target.is_open():
       self.hardware.close_target()
 
-    if self.session.hw_server.is_open():
+    if self.__session.hw_server.is_open():
       self.hardware.disconnect_server()
 
-    if self.session.hardware.is_open():
+    if self.__session.hardware.is_open():
       self.hardware.close_hardware()
 
-    if self.session.project.is_open():
+    if self.__session.project.is_open():
       self.project.close()
+
+    if self.__session.simulator.is_open():
+      self.simulator.close()
       
     self.__vivado_process.close()
-
-  def __delete__(self, instance):
-    if self.session.target.is_open():
-      self.hardware.close_target()
-
-    if self.session.hw_server.is_open():
-      self.hardware.disconnect_server()
-
-    if self.session.hardware.is_open():
-      self.hardware.close_hardware()
-
-    if self.session.project.is_open()():
-      self.project.close()
-      
-    self.__vivado_process.close()
-  

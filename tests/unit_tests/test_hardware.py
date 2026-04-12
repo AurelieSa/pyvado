@@ -14,7 +14,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
 
@@ -33,7 +33,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.project.open()
@@ -52,7 +52,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -68,7 +68,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -88,7 +88,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     
@@ -108,7 +108,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
 
@@ -126,7 +126,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -146,7 +146,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -166,7 +166,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -176,7 +176,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
 
     self.assertFalse(pv.session.hw_server.is_open())
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any("disconnect_server" in s for s in calls))
+    self.assertTrue(any("disconnect_hw_server" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_disconnect_server_not_call_if_server_not_open(self, mock_popen):
@@ -187,7 +187,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -206,7 +206,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -225,7 +225,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -246,7 +246,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -268,7 +268,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
 
@@ -287,7 +287,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -305,7 +305,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -313,7 +313,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     pv.hardware.open_target()
 
     with self.assertRaises(ValueError):
-      pv.hardware.set_bitstream("foo.goo")
+      pv.hardware.set_bitstream("foo.bar")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_set_bitstream_fail_if_file_does_not_exists(self, mock_popen):
@@ -324,7 +324,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     pv = Pyvado(pj_path)
     pv.hardware.open_hardware()
@@ -343,7 +343,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -366,7 +366,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
 
     pv = Pyvado(pj_path)
@@ -385,7 +385,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
 
     pv = Pyvado(pj_path)
@@ -407,7 +407,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
-    pj_path = "./foo/goo.xpr"
+    pj_path = "./foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -429,6 +429,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -437,7 +438,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -460,6 +461,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -469,7 +471,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -491,6 +493,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -501,7 +504,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -518,12 +521,13 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
-  def test_deploy_call_every_function_with_good_parameters(self, mock_popen):
+  def test_deploy_call_every_function_with_bard_parameters(self, mock_popen):
 
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -534,18 +538,18 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo2.bit"
 
     pv = Pyvado(pj_path)
     pv.project.open()
     
-    pv.hardware.deploy(bitstream_path=bitstream_file, server_url="goo")
+    pv.hardware.deploy(bitstream_path=bitstream_file, server_url="bar")
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any("open_hw_manager" in s for s in calls))
-    self.assertTrue(any("connect_hw_server -url goo" in s for s in calls))
+    self.assertTrue(any("connect_hw_server -url bar" in s for s in calls))
     self.assertTrue(any("open_hw_target" in s for s in calls))
     self.assertTrue(any(f"set_property PROGRAM.FILE {{{os.path.abspath(bitstream_file)}}} [current_hw_device]" in s for s in calls))
     self.assertTrue(any("program_hw_devices [current_hw_device]" in s for s in calls))
@@ -557,6 +561,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -567,7 +572,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -593,6 +598,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -603,7 +609,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -630,6 +636,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -640,7 +647,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file = "./tests/unit_tests/files/foo.bit"
 
@@ -669,6 +676,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -680,7 +688,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     ]
     mock_proc.poll.return_value = None
 
-    pj_path = "foo/goo.xpr"
+    pj_path = "foo/bar.xpr"
 
     bitstream_file1 = "./tests/unit_tests/files/foo.bit"
     bitstream_file2 = "./tests/unit_tests/files/foo.bit"

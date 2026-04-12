@@ -110,7 +110,7 @@ class ReportManager(PyvadoManager):
       self._vivado_process.send("close_design")
       self.__run = None
 
-  def utilisation(self, output_path : str = ".", hierarchical : bool = True):
+  def utilization(self, output_path : str = ".", hierarchical : bool = True):
     """
     report run utilization
 
@@ -206,6 +206,9 @@ class ReportManager(PyvadoManager):
 
     if not saif_file.exists():
       raise ValueError(f"{saif_file} does not exist")
+    
+    if not saif_file.suffix == ".saif":
+      raise ValueError(f"{saif_file} must use .saif extension")
     
     if strip_path == "":
       self._vivado_process.send(f"read_saif {saif_file}")
