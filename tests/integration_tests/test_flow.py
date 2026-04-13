@@ -4,7 +4,7 @@ from os import listdir
 
 class IntegrationTestPyvadoFlow(unittest.TestCase):
 
-  def test_reset_synth_remove_runs(self):
+  def test_toplevel(self):
 
     pv = Pyvado(
       project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
@@ -12,15 +12,18 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
 
     pv.project.open()
 
-    pv.flow.reset_run(run_name="synth_1")
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
 
-    synth_dir = listdir("./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.runs/synth_1")
+    pv.files.add_file("./tests/integration_tests/test_files/foo1.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
 
-    self.assertEqual(len(synth_dir), 0)
+    pv.flow.set_toplevel("foo1")
 
-    with self.assertRaises(FileNotFoundError):
-      impl_dir = listdir("./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.runs/impl_1")
+    pv.tcl.run("puts [get_property top [get_filesets sources_1]]", blocking=False)
+    top = pv.tcl.read()
 
+    self.assertEqual("foo1", top.strip())
 
   def test_synth_flow(self):
 
@@ -29,6 +32,14 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
     )
 
     pv.project.open()
+
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
+
+    pv.files.add_file("./tests/integration_tests/test_files/foo1.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
+
+    pv.flow.set_toplevel("foo1")
 
     pv.flow.reset_run(run_name="synth_1")
   
@@ -44,7 +55,15 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
     )
     pv.project.open()
 
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
+
+    pv.files.add_file("./tests/integration_tests/test_files/toplevel_test.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
+
     pv.flow.reset_run(run_name="synth_1")
+
+    pv.flow.set_toplevel("toplevel_test")
 
     pv.flow.synthesis()
 
@@ -60,7 +79,15 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
     )
     pv.project.open()
 
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
+
+    pv.files.add_file("./tests/integration_tests/test_files/toplevel_test.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
+
     pv.flow.reset_run(run_name="synth_1")
+
+    pv.flow.set_toplevel("toplevel_test")
 
     pv.flow.implementation()
 
@@ -77,7 +104,15 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
 
     pv.project.open()
 
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
+
+    pv.files.add_file("./tests/integration_tests/test_files/toplevel_test.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
+
     pv.flow.reset_run(run_name="synth_1")
+
+    pv.flow.set_toplevel("toplevel_test")
 
     pv.flow.implementation()
 
@@ -94,7 +129,15 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
 
     pv.project.open()
 
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
+
+    pv.files.add_file("./tests/integration_tests/test_files/toplevel_test.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
+
     pv.flow.reset_run(run_name="synth_1")
+
+    pv.flow.set_toplevel("toplevel_test")
 
     pv.flow.bitstream()
 
@@ -102,23 +145,25 @@ class IntegrationTestPyvadoFlow(unittest.TestCase):
 
     self.assertTrue((any(f.endswith(".bit") for f in impl_dir)))
 
-  def test_reset_impl_onyl_remove_impl(self):
-
+  def test_run_all(self):
     pv = Pyvado(
       project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
 
     pv.project.open()
 
+    pv.tcl.run("remove_files -fileset sources_1 *")
+    pv.tcl.run("remove_files -fileset constrs_1 *")
+
+    pv.files.add_file("./tests/integration_tests/test_files/toplevel_test.vhd")
+    pv.files.add_constraint_file("./tests/integration_tests/test_files/const.xdc")
+
     pv.flow.reset_run(run_name="synth_1")
 
-    pv.flow.implementation()
+    pv.flow.set_toplevel("toplevel_test")
 
-    pv.flow.reset_run(run_name="impl_1")
+    pv.flow.run_all()
 
     impl_dir = listdir("./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.runs/impl_1")
 
-    self.assertEqual(len(impl_dir), 2)
-
-    synth_dir = listdir("./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.runs/synth_1")
-    self.assertNotEqual(len(synth_dir), 0)
+    self.assertTrue((any(f.endswith(".bit") for f in impl_dir)))

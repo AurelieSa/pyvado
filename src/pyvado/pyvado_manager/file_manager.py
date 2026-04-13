@@ -110,20 +110,21 @@ class FileManager(PyvadoManager):
 
     design_files = []
     constrainst_files = []
+
+    file_path = [Path(f).resolve() for f in file_path]
     
     for f in file_path:
-      path = Path(f).resolve()
 
-      if not path.suffix in self.SUPPORTED_FILE_EXTENSIONS:
-        raise PyvadoError(f"{path.suffix} extension is not supported")
+      if not f.suffix in self.SUPPORTED_FILE_EXTENSIONS:
+        raise PyvadoError(f"{f.suffix} extension is not supported")
 
-      if not path.exists():
+      if not f.exists():
         raise PyvadoError(f"{f} does not exists")
       
-      if path.suffix == ".xdc" or path.suffix == ".sdc":
-        constrainst_files.append(str(path))
+      if f.suffix == ".xdc" or f.suffix == ".sdc":
+        constrainst_files.append(str(f))
       else:
-        design_files.append(str(path))
+        design_files.append(str(f))
 
     force = '-force' if force else ''
     file = "import_files" if import_file else "add_files"
@@ -133,12 +134,10 @@ class FileManager(PyvadoManager):
     if design_files != []:
       files = ' '.join(design_files)
       cmd.append(f"{file} -norecurse {force} {files}")
-      cmd.append(f"set_property used_in_synthesis {used_in_synth} [get_files {{{files}}}]")
-      cmd.append(f"set_property used_in_simulation {used_in_sim} [get_files {{{files}}}]")
     
     if constrainst_files != []:
       files = ' '.join(constrainst_files)
-      cmd.append(f"{file} -filesets constrs_1 -norecurse {force} {files}")
+      cmd.append(f"{file} -fileset constrs_1 -norecurse {force} {files}")
 
 
     cmd.append("update_compile_order")
@@ -148,6 +147,18 @@ class FileManager(PyvadoManager):
       cmd = cmd,
       blocking = True
     )
+
+    if design_files != []:
+      files = self.get_files()
+
+      file_name = [f.name for f in file_path]
+
+      new_files = ' '.join([f for f in files if Path(f).resolve().name in file_name and not Path(f).suffix in [".xdc", ".sdc"] ])
+
+      self._vivado_process.send(cmd=[
+        f"set_property used_in_synthesis {used_in_synth} [get_files {{{new_files}}}]",
+        f"set_property used_in_simulation {used_in_sim} [get_files {{{new_files}}}]"
+      ])
 
   def change_property(self, file_path : str | list[str], used_in_synth : bool = True, used_in_sim : bool = True):
     """
@@ -341,5 +352,8 @@ class FileManager(PyvadoManager):
 
     self._vivado_process.send("puts [get_files]", blocking=False)
     files = self._vivado_process.read()
+
+    if "No files matched" in files:
+      return []
 
     return shlex.split(files)

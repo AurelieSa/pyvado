@@ -70,9 +70,16 @@ class ReportManager(PyvadoManager):
 
     self._vivado_process.send("puts [get_runs]", blocking=False)
 
-    runs = self._vivado_process.read().strip()
+    runs = self._vivado_process.read().strip().split(" ")
 
-    return runs.split(" ")
+    available_run = []
+    for run in runs:
+      self._vivado_process.send(f"puts [get_property STATUS [get_runs {run}]]", blocking=False)
+      status = self._vivado_process.read().strip()
+      if status != "Not started":
+        available_run.append(run)
+
+    return available_run
   
   def open(self, run_name : str):
     """

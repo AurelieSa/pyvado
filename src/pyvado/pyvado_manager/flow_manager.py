@@ -87,7 +87,7 @@ class FlowManager(PyvadoManager):
     if run_name == "":
       raise ValueError("synth name is not set")
     
-    self._vivado_process.send(f"reset_run {run_name}")
+    self._vivado_process.send(f"reset_runs {run_name}")
 
 
   def synthesis(self, synth_name : str = "synth_1", num_jobs : int = 32):

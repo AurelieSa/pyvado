@@ -34,7 +34,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -48,6 +50,30 @@ class TestPyvadoFileManager(unittest.TestCase):
     self.assertIn("impl_1", runs)
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_can_get_runs_when_no_runs_launch(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.poll.return_value = None
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "synth_1 impl_1\n",
+      "Not started\n",
+      "Not started\n"
+    ]
+
+    pv = Pyvado(
+      project_path = "foo/foo.xpr"
+    )
+    pv.project.open()
+
+    runs = pv.report.get_runs()
+
+    self.assertEqual(runs, [])
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_open_run_when_porject_close(self, mock_popen):
 
     mock_proc = MagicMock()
@@ -57,7 +83,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "Not started\n",
+      "Not started\n"
     ]
 
     pv = Pyvado(
@@ -77,7 +105,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -102,6 +132,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n"
     ]
 
@@ -126,6 +158,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -153,6 +187,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -177,7 +213,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -197,7 +235,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -219,6 +259,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -249,6 +291,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -279,6 +323,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -308,7 +354,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -328,7 +376,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -350,6 +400,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -380,6 +432,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -409,7 +463,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -429,7 +485,9 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "synth_1 impl_1\n"
+      "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n"
     ]
 
     pv = Pyvado(
@@ -451,6 +509,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -479,6 +539,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -508,6 +570,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -537,6 +601,8 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "complete\n",
+      "complete\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]

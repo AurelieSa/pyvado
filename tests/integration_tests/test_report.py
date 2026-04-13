@@ -1,21 +1,14 @@
-
 import unittest
 from pyvado import Pyvado, PyvadoError
-from os import listdir 
+import os
 
-class IntegrationTestHardwareManager(unittest.TestCase):
+class IntegrationTestPyvadoReport(unittest.TestCase):
 
-  def test_program_device_steps_default(self):
-    pv = Pyvado(
-      project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
-    )
-
-    bitstream_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.runs/impl_1/toplevel_test.bit"
+  def test_list_runs(self):
 
     pv = Pyvado(
       project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
-
     pv.project.open()
 
     pv.tcl.run("remove_files -fileset sources_1 *")
@@ -28,19 +21,23 @@ class IntegrationTestHardwareManager(unittest.TestCase):
 
     pv.flow.set_toplevel("toplevel_test")
 
-    pv.flow.run_all()
+    synth_name = "synth_1"
+    impl_name = "impl_1"
 
-    pv.hardware.open_hardware()
-    pv.hardware.connect_server()
-    pv.hardware.open_target()
-    pv.hardware.set_bitstream(bitstream_path)
-    pv.hardware.program_device()
+    pv.flow.synthesis(synth_name)
 
-  def test_program_device_steps_find_bitstream_file(self):
+    pv.flow.implementation(impl_name)
+
+    runs = pv.report.get_runs()
+
+    self.assertIn(synth_name, runs)
+    self.assertIn(impl_name, runs)
+
+  def test_list_runs_when_no_run(self):
+
     pv = Pyvado(
       project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
-
     pv.project.open()
 
     pv.tcl.run("remove_files -fileset sources_1 *")
@@ -53,21 +50,15 @@ class IntegrationTestHardwareManager(unittest.TestCase):
 
     pv.flow.set_toplevel("toplevel_test")
 
-    pv.flow.run_all()
+    runs = pv.report.get_runs()
 
-    pv.hardware.open_hardware()
-    pv.hardware.connect_server()
-    pv.hardware.open_target()
-    pv.hardware.set_bitstream()
-    pv.hardware.program_device()
+    self.assertEqual(runs, [])
 
-  def test_program_device_steps_project_close(self):
+  def test_report_utilization(self):
+
     pv = Pyvado(
       project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
-
-    bitstream_path = "./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.runs/impl_1/toplevel_test.bit"
-
     pv.project.open()
 
     pv.tcl.run("remove_files -fileset sources_1 *")
@@ -80,21 +71,25 @@ class IntegrationTestHardwareManager(unittest.TestCase):
 
     pv.flow.set_toplevel("toplevel_test")
 
-    pv.flow.run_all()
+    synth_name = "synth_1"
+    report_name = "./tests/integration_tests/test_report/test_report_utilization.txt"
 
-    pv.project.close()
+    if os.path.exists(report_name):
+      os.remove(report_name)
 
-    pv.hardware.open_hardware()
-    pv.hardware.connect_server()
-    pv.hardware.open_target()
-    pv.hardware.set_bitstream(bitstream_path)
-    pv.hardware.program_device()
+    pv.flow.synthesis(synth_name)
 
-  def test_deploy(self):
+    pv.report.open(synth_name)
+
+    pv.report.utilization(report_name)
+
+    self.assertTrue(os.path.exists(report_name))
+
+  def test_report_power(self):
+
     pv = Pyvado(
       project_path="./tests/integration_tests/pyvado_integration_test_project/pyvado_integration_test_project.xpr"
     )
-
     pv.project.open()
 
     pv.tcl.run("remove_files -fileset sources_1 *")
@@ -107,6 +102,18 @@ class IntegrationTestHardwareManager(unittest.TestCase):
 
     pv.flow.set_toplevel("toplevel_test")
 
-    pv.flow.run_all()
+    synth_name = "synth_1"
+    report_name = "./tests/integration_tests/test_report/test_report_power.txt"
 
-    pv.hardware.deploy()
+    if os.path.exists(report_name):
+      os.remove(report_name)
+
+    pv.flow.synthesis(synth_name)
+
+    pv.report.open(synth_name)
+
+    pv.report.power(report_name)
+
+    self.assertTrue(os.path.exists(report_name))
+
+

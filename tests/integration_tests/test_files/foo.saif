@@ -1,0 +1,17 @@
+(SAIFILE
+   (SAIFVERSION "2.0")
+   (DIRECTION "backward")
+   (DESIGN )
+   (DATE "Mon Apr 13 11:24:39 2026")
+   (VENDOR "Xilinx, Inc")
+   (PROGRAM_NAME "Vivado Simulator")
+   (VERSION "2020.2")
+   (DIVIDER /)
+   (TIMESCALE  1 ps)
+   (DURATION  80000)
+   (INSTANCE  foo1
+      (NET 
+         (i_clk (T0 0) (T1 0) (TX 80000) (TZ 0) (TB 0) (TC 0))
+      )
+   )
+)

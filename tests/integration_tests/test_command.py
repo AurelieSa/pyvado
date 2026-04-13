@@ -6,7 +6,7 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
 
   def test_run_correct_command(self):
 
-    proc = Pyvado("foo.xpr")
+    proc = Pyvado()
 
     proc.tcl.run("puts \"foo\"")
 
@@ -22,7 +22,7 @@ class IntegrationTestPyvadoProcess(unittest.TestCase):
 
   def test_run_error_command(self):
 
-    proc = Pyvado("foo.xpr")
+    proc = Pyvado()
 
     with self.assertRaises(PyvadoError):
       proc.tcl.run("launch_runs foo")

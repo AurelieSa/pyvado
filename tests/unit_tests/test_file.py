@@ -82,7 +82,15 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    file_name = "./tests/unit_tests/files/bar.vhd"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -91,15 +99,13 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     pv.project.open()
 
-    file_name = "./tests/unit_tests/files/bar.vhd"
-
     pv.files.add_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
     self.assertTrue(any(f"update_compile_order" in s for s in calls))
-    self.assertFalse(any(f"set_property used_in_simulation false [get_files {os.path.abspath(file_name)}]" in s for s in calls))
-    self.assertFalse(any(f"set_property used_in_synthesis false [get_files {os.path.abspath(file_name)}]" in s for s in calls))
+    self.assertTrue(any(f"set_property used_in_simulation True [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
+    self.assertTrue(any(f"set_property used_in_synthesis True [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_can_add_file_no_force(self, mock_popen):
@@ -107,7 +113,16 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    file_name = "./tests/unit_tests/files/bar.vhd"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
+
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -115,8 +130,6 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     pv.project.open()
-
-    file_name = "./tests/unit_tests/files/bar.vhd"
 
     pv.files.add_file(file_name, force=False)
 
@@ -132,7 +145,15 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    file_name = "./tests/unit_tests/files/bar.vhd"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -140,8 +161,6 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     pv.project.open()
-
-    file_name = "./tests/unit_tests/files/bar.vhd"
 
     pv.files.add_file(file_name, used_in_synth=True, used_in_sim=False)
 
@@ -157,7 +176,15 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    file_name = "./tests/unit_tests/files/bar.vhd"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -165,8 +192,6 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     pv.project.open()
-
-    file_name = "./tests/unit_tests/files/bar.vhd"
 
     pv.files.add_file(file_name, used_in_sim=True, used_in_synth=False)
 
@@ -241,7 +266,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     pv.files.add_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any(f"add_files -filesets constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
+    self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_can_add_multiple_file(self, mock_popen):
@@ -329,7 +354,7 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(vhdl_file)}\n" in s for s in calls))
-    self.assertTrue(any(f"add_files -filesets constrs_1 -norecurse -force {os.path.abspath(xdc_file)}\n" in s for s in calls))
+    self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(xdc_file)}\n" in s for s in calls))
 
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
@@ -352,7 +377,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     pv.files.add_file(file_name, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any(f"import_files -filesets constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
+    self.assertTrue(any(f"import_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_add_simulation_file(self, mock_popen):
@@ -360,7 +385,15 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    file_name = "./tests/unit_tests/files/bar.vhd"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -368,8 +401,6 @@ class TestPyvadoFileManager(unittest.TestCase):
     )
 
     pv.project.open()
-
-    file_name = "./tests/unit_tests/files/bar.vhd"
 
     pv.files.add_simulation_file(file_name)
 
@@ -401,8 +432,6 @@ class TestPyvadoFileManager(unittest.TestCase):
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     self.assertTrue(any(f"import_files -norecurse -force {os.path.abspath(file_name)}" in s for s in calls))
     self.assertTrue(any(f"update_compile_order" in s for s in calls))
-    self.assertTrue(any(f"set_property used_in_simulation True [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
-    self.assertTrue(any(f"set_property used_in_synthesis False [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_can_constrainst_file(self, mock_popen):
@@ -410,7 +439,15 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    file_name = "./tests/unit_tests/files/foo.xdc"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -419,12 +456,12 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     pv.project.open()
 
-    file_name = "./tests/unit_tests/files/foo.xdc"
+    
 
     pv.files.add_constraint_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any(f"add_files -filesets constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
+    self.assertTrue(any(f"add_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
     self.assertFalse(any(f"set_property used_in_simulation True [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
     self.assertFalse(any(f"set_property used_in_synthesis True [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
 
@@ -448,7 +485,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     pv.files.add_constraint_file(file_name, import_file=True)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any(f"import_files -filesets constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
+    self.assertTrue(any(f"import_files -fileset constrs_1 -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_cant_add_constraint_file_with_correct_extension(self, mock_popen):

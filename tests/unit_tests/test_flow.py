@@ -67,7 +67,7 @@ class TestPyvadoResetRun(unittest.TestCase):
     pv.flow.reset_run()
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any(f"reset_run synth_1" in s for s in calls))
+    self.assertTrue(any(f"reset_runs synth_1" in s for s in calls))
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_reset_run_other_name(self, mock_popen):
@@ -91,7 +91,7 @@ class TestPyvadoResetRun(unittest.TestCase):
     pv.flow.reset_run(run_name = reset_run)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    self.assertTrue(any(f"reset_run {reset_run}" in s for s in calls))
+    self.assertTrue(any(f"reset_runs {reset_run}" in s for s in calls))
 
     self.assertTrue(mock_proc.stdout.readline.called)
 
