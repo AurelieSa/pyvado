@@ -212,3 +212,5 @@ __marimo__/
 /tests/integration_tests/pyvado_integration_test_project
 
 .pyvadoLog
+
+/exemples/my_vivado_project

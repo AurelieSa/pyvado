@@ -1,0 +1,28 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+| Date         : Mon Apr 13 21:26:12 2026
+| Host         : blake running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_utilization -hierarchical -file /home/auresa/Documents/architecture/lib_tcl/pyvado/exemples/outputs/example_uti.txt
+| Design       : toplevel_test
+| Device       : xc7a100tcsg324-1
+| Speed File   : -1
+| Design State : Synthesized
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------+--------+------------+------------+---------+------+-----+--------+--------+------------+
+|    Instance   | Module | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP Blocks |
++---------------+--------+------------+------------+---------+------+-----+--------+--------+------------+
+| toplevel_test |  (top) |          0 |          0 |       0 |    0 |  16 |      0 |      0 |          0 |
++---------------+--------+------------+------------+---------+------+-----+--------+--------+------------+
+
+

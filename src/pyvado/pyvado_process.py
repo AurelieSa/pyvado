@@ -93,6 +93,8 @@ class PyvadoProcess:
 
     self.__process.stdin.flush()
 
+    self.__process.stdout.flush()
+
     if blocking:
       while True:
         
