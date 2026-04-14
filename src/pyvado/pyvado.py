@@ -1,9 +1,8 @@
 """
 File name: pyvado
 Author: aureliesa
-Version: 0.2.0
+Version: 1.0.0
 License: GPL-3.0-or-later
-Contact: aurelie.saulq@proton.me
 Dependencies: pyvado_process, pyvado_session, pyvado_manager
 Descriptions: Vivado Python API wrapper
 """

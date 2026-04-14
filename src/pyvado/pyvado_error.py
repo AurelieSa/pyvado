@@ -1,7 +1,7 @@
 """
 File name: pyvado_error
 Author: aureliesa
-Version: 0.1.0
+Version: 1.0.0
 License: GPL-3.0-or-later
 Contact: aurelie.saulq@proton.me
 Dependencies: 

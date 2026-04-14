@@ -1,17 +1,15 @@
 """
-File name: prject_manager
+File name: project_manager
 Author: aureliesa
-Version: 0.1.0
+Version: 1.0.0
 License: GPL-3.0-or-later
-Contact: aurelie.saulq@proton.me
-Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error
+Dependencies: pyvado_process, pyvado_session, pyvado_manager
 Descriptions: Pyvado project manager
 """
 
 from ..pyvado_session import PyvadoSession
 from ..pyvado_process import PyvadoProcess
 from .pyvado_manager import PyvadoManager
-from ..pyvado_error import PyvadoError
 
 class ProjectManager(PyvadoManager):
   """

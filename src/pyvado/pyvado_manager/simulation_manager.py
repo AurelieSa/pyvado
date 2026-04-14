@@ -1,10 +1,9 @@
 """
-File name: flow_manager
+File name: simulation_manager
 Author: aureliesa
 Version: 0.1.0
 License: GPL-3.0-or-later
-Contact: aurelie.saulq@proton.me
-Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error
+Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib, re
 Descriptions: Pyvado synthesis flow manager
 """
 

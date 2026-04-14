@@ -3,9 +3,8 @@ File name: tcl_manager
 Author: aureliesa
 Version: 0.1.0
 License: GPL-3.0-or-later
-Contact: aurelie.saulq@proton.me
-Dependencies: subprocess, time
-Descriptions: Vivado subprocess
+Dependencies: pyvado_process, pyvado_session, pyvado_manager
+Descriptions: Pyvado TCL command manager
 """
 
 from ..pyvado_process import PyvadoProcess
