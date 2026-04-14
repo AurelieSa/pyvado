@@ -11,6 +11,19 @@ Python Vivado API
 
 This project aims to provide a simple and as much comprehensive as possible tools for controlling vivado with python methods for vivado automation
 
+## Structure
+
+Pyvado is base on multiple manager, each runing a specific part of vivado. Manager are follows:
+1. `TCLManager` : Basic manager for runing TCL command
+2. `ProjectManager` : Vivado project manager
+3. `FileManager` : Vivado file system manager
+4. `FlowManager` : Vivado synthesis flow manager
+5. `HardwareManager` : Vivado hardware manager
+6. `ReportManager` : Vivado hardware report manager
+7. `SimulatorManager` : Vivado simulation manager
+
+These managers communicate to each other via `PyvadoSession` object and send TCL command directly to vivado process open in batch mode and controlled via `PyvadoProcess` class.
+
 ## Installation
 
 ```bash
@@ -101,6 +114,7 @@ For more comprehensive tutorials, see example.
 
 ## Roadmap
 
+- comprehensive report manager
 - create vivado project
 - multiple vivado execution
 
