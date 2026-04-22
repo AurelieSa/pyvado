@@ -1,7 +1,7 @@
 """
 File name: report_manager
 Author: aureliesa
-Version: 1.1.0
+Version: 1.2.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_session, pyvado_manager, pyvado_error, pathlib
 Descriptions: Pyvado synthesis flow manager
@@ -25,10 +25,22 @@ class ReportManager(PyvadoManager):
     open run to get reports
   close()
     close runs
-  utilisation(output_path : str = ".", hierarchical : bool = True)
-    report run utilization
-  power(output_path : str = ".")
-    report run power consomption
+  utilisation(output_path : str = ".", extra_option : str = "")
+    report utilization
+  power(output_path : str = ".", extra_option : str = "")
+    report power consomption
+  clock_network(output_path : str = ".", extra_option : str = "")
+    report clock network
+  timing(output_path : str = ".", extra_option : str = "")
+    report timing
+  methodology(output_path : str = ".", extra_option : str = "")
+    report methodology
+  drc(output_path : str = ".", extra_option : str = "")
+    report drc
+  noise(output_path : str = ".", extra_option : str = "")
+    report noise
+  operating_conditions(output_path : str = ".", extra_option : str = "")
+    report operating conditions
   set_activity(file_path : str, strip_path : str = "")
     Read saif file
   """
@@ -113,16 +125,16 @@ class ReportManager(PyvadoManager):
       self._pyvado_session.process.send("close_design")
       self.__run = None
 
-  def utilization(self, output_path : str = ".", hierarchical : bool = True):
+  def utilization(self, output_path : str = ".", extra_option : str = ""):
     """
-    report run utilization
+    report utilization
 
     Parameters
     ----------
     output_path : str = ""
       output file path
-    hierarchical : bool = True
-      report hierarchical utilization
+    extra_option : str = ""
+      extra command option
 
     Errors
     ------
@@ -143,19 +155,18 @@ class ReportManager(PyvadoManager):
 
     output_path = Path(output_path).resolve()
 
-    if hierarchical:
-      self._pyvado_session.process.send(f"report_utilization -hierarchical -file {output_path}")
-    else:
-      self._pyvado_session.process.send(f"report_utilization -file {output_path}")
+    self._pyvado_session.process.send(f"report_utilization {extra_option} -file {output_path}")
 
-  def power(self, output_path : str = "."):
+  def power(self, output_path : str = ".", extra_option : str = ""):
     """
-    report run power consomption
+    report power consomption
 
     Parameters
     ----------
     output_path : str = ""
       output report path
+    extra_option : str = ""
+      extra command option
 
     Errors
     ------
@@ -176,7 +187,231 @@ class ReportManager(PyvadoManager):
 
     output_path = Path(output_path).resolve()
 
-    self._pyvado_session.process.send(f"report_power -file {output_path}")
+    self._pyvado_session.process.send(f"report_power {extra_option} -file {output_path}")
+
+  def timing(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report timing
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./timing_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_timing_summary {extra_option} -file {output_path}")
+
+  def clock_network(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report clock network
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./clock_network_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_clock_network {extra_option} -file {output_path}")
+
+  def clock_interaction(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report clock interaction
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./clock_interaction_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_clock_interaction {extra_option} -file {output_path}")
+
+  def methodology(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report methodology
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./methodology_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_methodology {extra_option} -file {output_path}")
+
+  def drc(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report drc
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./drc_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_drc {extra_option} -file {output_path}")
+
+  def noise(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report noise
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./noise_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_ssn {extra_option} -file {output_path}")
+
+  def operating_conditions(self, output_path : str = ".", extra_option : str = ""):
+    """
+    report operating conditions
+
+    Parameters
+    ----------
+    output_path : str = ""
+      output report path
+    extra_option : str = ""
+      extra command option
+
+    Errors
+    ------
+    PyvadoError
+      project must be open
+    PyvadoError
+      run must be open
+    """
+
+    if not self._pyvado_session.project.is_open():
+      raise PyvadoError("Project must be open")
+    
+    if not self.__run:
+      raise PyvadoError("Run must be open")
+    
+    if output_path == ".":
+      output_path = "./operating_conditions_report.txt"
+
+    output_path = Path(output_path).resolve()
+
+    self._pyvado_session.process.send(f"report_operating_conditions {extra_option} -file {output_path}")
 
   def set_activity(self, file_path : str, strip_path : str = ""):
     """

@@ -1,0 +1,35 @@
+# Simultaneously Switching Noise (SSN) Report
+# Version: 1.0
+# Created on: Wed Apr 22 19:00:13 2026
+# Result Name: 
+# Project Name: pyvado_integration_test_project
+# Project Family: Artix-7
+# Part: xc7a100tcsg324
+# Temperature Grade: commercial
+# SSN Data Version: Production
+# Package Version: FINAL 2012-07-17
+# Package Pin Delay Version: VERS. 2.0 2012-07-17
+
+IO Bank,VCCO,Signal Name,Pin Number,IO Standard,Drive (mA),Slew Rate,OFFCHIP_TERM,Remaining Margin (%),Result, Notes
+14,3.3,LED[3],N14,LVCMOS33,12,SLOW,FP_VTT_50,95.7,PASS,
+14,3.3,LED[4],R18,LVCMOS33,12,SLOW,FP_VTT_50,92.0,PASS,
+14,3.3,LED[5],V17,LVCMOS33,12,SLOW,FP_VTT_50,61.8,PASS,
+14,3.3,LED[6],U17,LVCMOS33,12,SLOW,FP_VTT_50,64.4,PASS,
+14,3.3,LED[7],U16,LVCMOS33,12,SLOW,FP_VTT_50,60.6,PASS,
+14,3.3,LED[8],V16,LVCMOS33,12,SLOW,FP_VTT_50,67.0,PASS,
+14,3.3,LED[9],T15,LVCMOS33,12,SLOW,FP_VTT_50,80.7,PASS,
+14,3.3,LED[10],U14,LVCMOS33,12,SLOW,FP_VTT_50,70.9,PASS,
+14,3.3,LED[11],T16,LVCMOS33,12,SLOW,FP_VTT_50,69.6,PASS,
+14,3.3,LED[12],V15,LVCMOS33,12,SLOW,FP_VTT_50,65.2,PASS,
+14,3.3,LED[13],V14,LVCMOS33,12,SLOW,FP_VTT_50,69.2,PASS,
+14,3.3,LED[14],V12,LVCMOS33,12,SLOW,FP_VTT_50,76.2,PASS,
+14,3.3,LED[15],V11,LVCMOS33,12,SLOW,FP_VTT_50,76.7,PASS,
+15,3.3,LED[0],H17,LVCMOS33,12,SLOW,FP_VTT_50,91.2,PASS,
+15,3.3,LED[1],K15,LVCMOS33,12,SLOW,FP_VTT_50,91.4,PASS,
+15,3.3,LED[2],J13,LVCMOS33,12,SLOW,FP_VTT_50,88.7,PASS,
+
+
+# Reference Links
+# Safe to Ignore SSN Failure on MIG Designs - https://support.xilinx.com/s/article/36141
+# SSN Mitigation Strategy - http://www.xilinx.com/support/documentation/user_guides/ug471_7Series_SelectIO.pdf#search=%22Mitigate%22
+# Off-chip Terminations - http://www.xilinx.com/support/documentation/user_guides/ug471_7Series_SelectIO.pdf#search=%22terminated%22

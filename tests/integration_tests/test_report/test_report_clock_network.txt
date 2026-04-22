@@ -1,0 +1,21 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+| Date         : Wed Apr 22 18:21:31 2026
+| Host         : blake running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_clock_networks -file /home/auresa/Documents/architecture/lib_tcl/pyvado/tests/integration_tests/test_report/test_report_clock_network.txt
+| Design       : toplevel_test
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Synthesized
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Clock Networks Report
+
+
+Constrained Clocks
+-------------------
+
+Clock sys_clk_pin (100MHz)(endpoints: 16 clock, 0 nonclock)
+Port clock
+
