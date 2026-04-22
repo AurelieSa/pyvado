@@ -225,7 +225,9 @@ class TestPyvadoOpen(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "digilent:nexys-4-ddr digilent:nexys-A7-100t\n"
+      "digilent:nexys-4-ddr digilent:nexys-A7-100t\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
 

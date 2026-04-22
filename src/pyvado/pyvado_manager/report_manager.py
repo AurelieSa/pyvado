@@ -1,7 +1,7 @@
 """
 File name: report_manager
 Author: aureliesa
-Version: 1.0.0
+Version: 1.1.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_session, pyvado_manager, pyvado_error, pathlib
 Descriptions: Pyvado synthesis flow manager
@@ -64,13 +64,13 @@ class ReportManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open")
 
-    self._pyvado_session.process.send("puts [get_runs]", blocking=False)
+    self._pyvado_session.process.send("puts [get_runs]")
 
     runs = self._pyvado_session.process.read().strip().split(" ")
 
     available_run = []
     for run in runs:
-      self._pyvado_session.process.send(f"puts [get_property STATUS [get_runs {run}]]", blocking=False)
+      self._pyvado_session.process.send(f"puts [get_property STATUS [get_runs {run}]]")
       status = self._pyvado_session.process.read().strip()
       if status != "Not started":
         available_run.append(run)

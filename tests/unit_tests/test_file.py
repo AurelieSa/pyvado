@@ -90,7 +90,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -104,6 +107,7 @@ class TestPyvadoFileManager(unittest.TestCase):
     pv.files.add_file(file_name)
 
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
+    print(calls)
     self.assertTrue(any(f"add_files -norecurse -force {os.path.abspath(file_name)}\n" in s for s in calls))
     self.assertTrue(any(f"update_compile_order" in s for s in calls))
     self.assertTrue(any(f"set_property used_in_simulation True [get_files {{{os.path.abspath(file_name)}}}]" in s for s in calls))
@@ -123,7 +127,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
 
@@ -157,7 +164,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -190,7 +200,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -215,7 +228,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -238,7 +262,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -260,7 +295,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -282,7 +328,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -346,7 +403,19 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -371,7 +440,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -401,7 +481,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -426,7 +509,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -457,7 +551,10 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -566,11 +663,23 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
     mock_proc.poll.return_value = None
 
     pj_path = "foo/foo.xpr"
     file_path_if_copy = "foo/foo.srcs/sources_1/import/bar.vhd"
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"{os.path.abspath(file_path_if_copy)}\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
 
     pv = Pyvado(
       project_path = pj_path
@@ -581,7 +690,13 @@ class TestPyvadoFileManager(unittest.TestCase):
     file_name = "./tests/unit_tests/files/bar.vhd"
 
     mock_proc.stdout.flush()
-    mock_proc.stdout.readline.side_effect = [f"{os.path.abspath(file_path_if_copy)}\n", "PYVADO_COMMAND_DONE\n"]
+    mock_proc.stdout.readline.side_effect = [
+      f"{os.path.abspath(file_path_if_copy)}\n", 
+      "PYVADO_COMMAND_DONE\n", 
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
 
     pv.files.remove_file(file_name, delete_from_disk=True)
 
@@ -635,7 +750,10 @@ class TestPyvadoFileManager(unittest.TestCase):
     pv.project.open()
 
     mock_proc.stdout.flush()
-    mock_proc.stdout.readline.return_value = '"/Volumes/Disque Dur/Photos" /usr/local/bin /home/user/image.png\n'
+    mock_proc.stdout.readline.side_effect = [
+      '"/Volumes/Disque Dur/Photos" /usr/local/bin /home/user/image.png\n',
+      "PYVADO_COMMAND_DONE\n"
+    ]
 
     self.assertEqual(pv.files.get_files(), correct_list)
 
@@ -645,7 +763,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -669,7 +798,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(
@@ -691,7 +831,18 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      f"\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n"
+    ]
     mock_proc.poll.return_value = None
 
     pv = Pyvado(

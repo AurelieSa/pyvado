@@ -43,30 +43,6 @@ class TestPyvadoProcess(unittest.TestCase):
     self.assertIn("puts \"PYVADO_COMMAND_DONE\"\n", calls)
     self.assertTrue(any("PYVADO_COMMAND_DONE" in s for s in calls))
 
-
-  @patch('pyvado.pyvado_process.subprocess.Popen')
-  def test_send_block_false(self, mock_popen):
-
-    mock_proc = MagicMock()
-    mock_popen.return_value = mock_proc
-
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-    mock_proc.poll.return_value = None
-
-    vp = PyvadoProcess()
-
-    mock_proc.stdin.write.reset_mock()
-    mock_proc.stdout.readline.reset_mock()
-
-    vp.send("my_cmd", blocking=False)
-
-    self.assertFalse(mock_proc.stdout.readline.called)
-
-    calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
-    
-    self.assertNotIn("puts \"PYVADO_COMMAND_DONE\"\n", calls)
-    self.assertFalse(any("PYVADO_COMMAND_DONE" in s for s in calls))
-
   @patch('pyvado.pyvado_process.subprocess.Popen')
   @patch('pyvado.pyvado_process.time.time')
   def test_command_timeout(self, mock_time, mock_popen):
@@ -74,7 +50,7 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_time.side_effect = [0, 0, 0, 0, 0, 70]
+    mock_time.side_effect = [0, 0, 0, 0, 0, 0, 0, 70]
 
     
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
@@ -119,22 +95,7 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc.poll.return_value = 1
     
     with self.assertRaises(RuntimeError):
-      vp.send("my_cmd", blocking=True)
-
-  @patch('pyvado.pyvado_process.subprocess.Popen')
-  def test_read(self, mock_popen):
-
-    mock_proc = MagicMock()
-    mock_popen.return_value = mock_proc
-
-    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-    mock_proc.poll.return_value = None
-
-    vp = PyvadoProcess()
-
-    mock_proc.stdout.readline.return_value = "some results\n"
-    
-    self.assertEqual(vp.read(), "some results\n")
+      vp.send("my_cmd")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_close(self, mock_popen):
@@ -166,7 +127,7 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc.poll.return_value = 1
     
     with self.assertRaises(RuntimeError):
-      vp.send("my_cmd", blocking=True)
+      vp.send("my_cmd")
     
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
     
@@ -187,7 +148,7 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "invalid command name my_cmd"
     
     with self.assertRaises(PyvadoError):
-      vp.send("my_cmd", blocking=True)
+      vp.send("my_cmd")
 
   @patch('pyvado.pyvado_process.subprocess.Popen')
   def test_raise_pyvado_error_when_error(self, mock_popen):
@@ -204,5 +165,5 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc.stdout.readline.return_value = "ERROR: my_cmd bad argument"
     
     with self.assertRaises(PyvadoError):
-      vp.send("my_cmd", blocking=True)
+      vp.send("my_cmd")
     

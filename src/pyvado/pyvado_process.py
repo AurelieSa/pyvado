@@ -1,7 +1,7 @@
 """
 File name: pyvado_process
 Author: aureliesa
-Version: 1.0.0
+Version: 1.1.0
 License: GPL-3.0-or-later
 Dependencies: subprocess, time, pyvado_error
 Descriptions: Vivado subprocess
@@ -22,13 +22,18 @@ class PyvadoProcess:
 
   Methods
   -------
-  send(cmd : str | list[str], blocking : bool = True)
-    send command line(s) to vivado. If blocking=True, wait for the end of command line execution
+  send(cmd : str | list[str])
+    send command line(s) to vivado.
   read(self) -> str:
     read vivado output
   close(self):
     close vivado process
+  flush():
+    flush internal buffer
   """
+
+  __SENTINEL = "PYVADO_COMMAND_DONE"
+  __SENTINEL_CMD = f"puts \"{__SENTINEL}\""
 
   def __init__(
       self, 
@@ -65,8 +70,9 @@ class PyvadoProcess:
       if time.time() - start > self.__timeout:
         raise TimeoutError("Command execution duration has exceed timeout")
       
-    self.send("puts [version -short]", blocking=False)
-    version = self.read().strip()
+    self.__process.stdin.write("puts [version -short]\n")
+    self.__process.stdin.flush()
+    version = self.__process.stdout.readline()
     
       
     # Liste de suspects habituels
@@ -81,18 +87,36 @@ class PyvadoProcess:
 
     found = ' '.join([f'\"{r}\"' for r in found])
     self.send(f"set_param board.repoPaths [list {found}]")
-    
 
-  def send(self, cmd : str | list[str], blocking : bool = True):
+    self.__buffer = []
+
+  def flush(self):
     """
-    send command line(s) to vivado. If blocking=True, wait for the end of command line execution
+    flush internal read buffer
+    """
+
+    self.__buffer = []
+
+  def send(self, cmd : str | list[str]):
+    """
+    send command line(s) to vivado.
 
     Parameters
     ----------
     cmd : str | list[str]
       command line(s)
-    blocking : bool = True
-      wait for the end of command line execution if True
+    """
+    self.flush()
+
+    if not isinstance(cmd, list):
+      cmd = [cmd]
+
+    for c in cmd:
+      self.__run(c)
+
+  def __run(self, cmd : str):
+    """
+    run vivado command
     """
 
     if self.__process.poll() is not None:
@@ -100,41 +124,40 @@ class PyvadoProcess:
 
     start_time = time.time()
 
-    if isinstance(cmd, list):
-      cmd = '\n'.join(cmd)
-
-    self.__process.stdin.write(cmd+'\n')
-
-    if blocking:
-      self.__process.stdin.write("puts \"PYVADO_COMMAND_DONE\"\n")
+    self.__process.stdin.write(cmd + '\n')
+    self.__process.stdin.write(self.__SENTINEL_CMD + '\n')
 
     self.__process.stdin.flush()
 
     self.__process.stdout.flush()
 
-    if blocking:
-      while True:
-        
-        if time.time() - start_time > self.__timeout:
-          raise TimeoutError("Command execution duration has exceed timeout")
+    while True:
+      if time.time() - start_time > self.__timeout:
+        raise TimeoutError("Command execution duration has exceed timeout")
 
-        line = self.__process.stdout.readline()
+      line = self.__process.stdout.readline()
 
-        if "invalid command name" in line:
-          raise PyvadoError(line)
-        
-        if line.startswith("ERROR:"):
-          raise PyvadoError(line)
+      if "invalid command name" in line:
+        raise PyvadoError(line)
+      
+      if line.startswith("ERROR:"):
+        raise PyvadoError(line)
 
-        if line.startswith("PYVADO_COMMAND_DONE"):
-          break
+      if line.startswith("PYVADO_COMMAND_DONE"):
+        break
+
+      self.__buffer.append(line)
+
   
   def read(self) -> str:
     """
     read vivado output
     """
 
-    return self.__process.stdout.readline()
+    if len(self.__buffer) != 0:
+      return self.__buffer.pop(0)
+    else:
+      return None
   
   def close(self):
     """

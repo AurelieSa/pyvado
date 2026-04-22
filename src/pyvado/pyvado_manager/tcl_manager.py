@@ -1,7 +1,7 @@
 """
 File name: tcl_manager
 Author: aureliesa
-Version: 0.1.0
+Version: 1.1.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_session, pyvado_manager
 Descriptions: Pyvado TCL command manager
@@ -42,8 +42,7 @@ class TCLManager(PyvadoManager):
     """
 
     self._pyvado_session.process.send(
-      cmd = cmd,
-      blocking = blocking
+      cmd = cmd
     )
 
   def read(self) -> str:

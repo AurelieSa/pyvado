@@ -1,7 +1,7 @@
 """
 File name: file_manager
 Author: aureliesa
-Version: 1.1.0
+Version: 1.2.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib, shlex
 Descriptions: Pyvado synthesis flow manager
@@ -141,8 +141,7 @@ class FileManager(PyvadoManager):
 
 
     self._pyvado_session.process.send(
-      cmd = cmd,
-      blocking = True
+      cmd = cmd
     )
 
     if design_files != []:
@@ -347,7 +346,7 @@ class FileManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open to add files")
 
-    self._pyvado_session.process.send("puts [get_files]", blocking=False)
+    self._pyvado_session.process.send("puts [get_files]")
     files = self._pyvado_session.process.read()
 
     if "No files matched" in files:

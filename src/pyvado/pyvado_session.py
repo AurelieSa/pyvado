@@ -1,7 +1,7 @@
 """
 File name: pyvado_session
 Author: aureliesa
-Version: 1.1.0
+Version: 1.2.0
 License: GPL-3.0-or-later
 Dependencies: pathlib, pyvado_error
 Descriptions: Vivado Python API wrapper
@@ -203,7 +203,7 @@ class PyvadoSession():
       vivado version
     """
 
-    self.__vivado_process.send("puts [version -short]", blocking=False)
+    self.__vivado_process.send("puts [version -short]")
     return self.__vivado_process.read().strip()
   
   def get_parts(self, filter : str = "") -> list[str] : 
@@ -222,10 +222,10 @@ class PyvadoSession():
     """
 
     if filter == "":
-      self.__vivado_process.send("puts [get_parts]", blocking=False)
+      self.__vivado_process.send("puts [get_parts]")
     else:
       filter = filter.replace(' ', '*')
-      self.__vivado_process.send(f"puts [get_parts -filter {{NAME =~ \"*{filter}*\"}}]", blocking=False)
+      self.__vivado_process.send(f"puts [get_parts -filter {{NAME =~ \"*{filter}*\"}}]")
 
     parts = self.__vivado_process.read()
     parts = parts.strip()
@@ -251,10 +251,10 @@ class PyvadoSession():
     """
 
     if filter == "":
-      self.__vivado_process.send("puts [get_boards]", blocking=False)
+      self.__vivado_process.send("puts [get_boards]")
     else:
       filter = filter.replace(' ', '*')
-      self.__vivado_process.send(f"puts [get_boards -filter {{NAME =~ \"*{filter}*\"}}]", blocking=False)
+      self.__vivado_process.send(f"puts [get_boards -filter {{NAME =~ \"*{filter}*\"}}]")
 
     parts = self.__vivado_process.read()
     parts = parts.strip()

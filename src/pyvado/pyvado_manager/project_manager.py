@@ -1,7 +1,7 @@
 """
 File name: project_manager
 Author: aureliesa
-Version: 1.1.0
+Version: 1.2.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_session, pyvado_manager, pyvado_error
 Descriptions: Pyvado project manager
@@ -63,8 +63,7 @@ class ProjectManager(PyvadoManager):
       self._pyvado_session.set_project_path(project_path)
 
     self._pyvado_session.process.send(
-      cmd = f"open_project {self._pyvado_session.project_path}",
-      blocking = True
+      cmd = f"open_project {self._pyvado_session.project_path}"
     )
     self._pyvado_session.project.open()
 
@@ -75,8 +74,7 @@ class ProjectManager(PyvadoManager):
     
     if self._pyvado_session.project.is_open():
       self._pyvado_session.process.send(
-        cmd = "close_project",
-        blocking = True
+        cmd = "close_project"
       )
       self._pyvado_session.project.close()
 

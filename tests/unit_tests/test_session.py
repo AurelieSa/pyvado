@@ -121,7 +121,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "part1 part2 part3 part4\n"
+      "part1 part2 part3 part4\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()
@@ -143,7 +144,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "p-xz-7 p-xz-8\n"
+      "p-xz-7 p-xz-8\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()
@@ -168,7 +170,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "\n"
+      "\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()
@@ -188,7 +191,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "board1 board2 board3 board4\n"
+      "board1 board2 board3 board4\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()
@@ -210,7 +214,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "digilent:nexys-4-ddr digilent:nexys-A7-100t\n"
+      "digilent:nexys-4-ddr digilent:nexys-A7-100t\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()
@@ -235,7 +240,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "\n"
+      "\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()
@@ -255,7 +261,8 @@ class TestPyvadoSession(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
-      "2025.1.2\n"
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     ps = PyvadoSession()

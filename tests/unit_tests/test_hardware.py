@@ -436,7 +436,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
-      "./tests/unit_tests"
+      "./tests/unit_tests",
+      "PYVADO_COMMAND_DONE\n",
     ]
     mock_proc.poll.return_value = None
 
@@ -471,6 +472,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -505,6 +507,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -542,6 +545,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "./tests/unit_tests/files",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -577,6 +581,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -617,6 +622,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "./tests/unit_tests/files",
       "PYVADO_COMMAND_DONE\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
     mock_proc.poll.return_value = None
@@ -656,6 +662,7 @@ class TestPyvadoHardwareManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "./tests/unit_tests/files",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]

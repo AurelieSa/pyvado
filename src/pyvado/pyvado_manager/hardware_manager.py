@@ -1,7 +1,7 @@
 """
 File name: hardware_manager
 Author: aureliesa
-Version: 1.1.0
+Version: 1.2.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_session, pyvado_manager, pyvado_error, pathlib
 Descriptions: Pyvado synthesis flow manager
@@ -154,7 +154,7 @@ class HardwareManager(PyvadoManager):
     
     if bitstream_path == "":
       if self._pyvado_session.project.is_open():
-        self._pyvado_session.process.send("puts [get_property DIRECTORY [current_run -implementation]]", blocking=False)
+        self._pyvado_session.process.send("puts [get_property DIRECTORY [current_run -implementation]]")
         toplevel_path = self._pyvado_session.process.read().strip()
         
         bitstream_files = list(Path(f"{toplevel_path}/").glob("*.bit"))

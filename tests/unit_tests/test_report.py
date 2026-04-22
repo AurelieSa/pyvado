@@ -37,8 +37,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -64,8 +67,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "Not started\n",
-      "Not started\n"
+      "PYVADO_COMMAND_DONE\n",
+      "Not started\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -90,8 +96,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "Not started\n",
-      "Not started\n"
+      "PYVADO_COMMAND_DONE\n",
+      "Not started\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -114,8 +123,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -142,8 +154,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
 
@@ -170,8 +185,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -201,8 +219,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -230,8 +251,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -254,8 +278,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -279,8 +306,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -313,8 +343,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -347,8 +380,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -381,8 +417,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -405,8 +444,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n"
     ]
 
     pv = Pyvado(
@@ -430,8 +472,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -464,8 +509,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
@@ -498,8 +546,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n",
     ]
 
     pv = Pyvado(
@@ -522,8 +573,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
-      "complete\n"
+      "PYVADO_COMMAND_DONE\n",
+      "complete\n",
+      "PYVADO_COMMAND_DONE\n",
     ]
 
     pv = Pyvado(
@@ -547,8 +601,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -579,8 +636,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -612,8 +672,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
@@ -645,8 +708,11 @@ class TestPyvadoFileManager(unittest.TestCase):
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "complete\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n"
     ]
