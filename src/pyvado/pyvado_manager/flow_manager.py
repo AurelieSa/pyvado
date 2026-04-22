@@ -1,13 +1,12 @@
 """
 File name: flow_manager
 Author: aureliesa
-Version: 1.0.0
+Version: 1.1.0
 License: GPL-3.0-or-later
-Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error
+Dependencies: pyvado_session, pyvado_manager, pyvado_error
 Descriptions: Pyvado synthesis flow manager
 """
 
-from ..pyvado_process import PyvadoProcess
 from ..pyvado_error import PyvadoError
 from ..pyvado_session import PyvadoSession
 from .pyvado_manager import PyvadoManager
@@ -38,7 +37,6 @@ class FlowManager(PyvadoManager):
   """
 
   def __init__(self,
-               vivado_process : PyvadoProcess,
                pyvado_session : PyvadoSession
               ):
     """
@@ -53,7 +51,6 @@ class FlowManager(PyvadoManager):
     """
     
     super().__init__(
-      vivado_process = vivado_process,
       pyvado_session = pyvado_session
     )
 
@@ -65,7 +62,7 @@ class FlowManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("project must be open")
     
-    self._vivado_process.send([
+    self._pyvado_session.process.send([
       f"set_property top {module_name} [current_fileset]",
       "update_compile_order -fileset sources_1",
     ])
@@ -86,7 +83,7 @@ class FlowManager(PyvadoManager):
     if run_name == "":
       raise ValueError("synth name is not set")
     
-    self._vivado_process.send(f"reset_runs {run_name}")
+    self._pyvado_session.process.send(f"reset_runs {run_name}")
 
 
   def synthesis(self, synth_name : str = "synth_1", num_jobs : int = 32):
@@ -110,7 +107,7 @@ class FlowManager(PyvadoManager):
     if synth_name == "":
       raise ValueError("synth name is not set")
     
-    self._vivado_process.send([
+    self._pyvado_session.process.send([
       f"launch_runs {synth_name} -jobs {num_jobs}", 
       f"wait_on_run {synth_name}"
     ])
@@ -130,7 +127,7 @@ class FlowManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open")
     
-    self._vivado_process.send(f"synth_design -top {ooc_module_name} -part [get_property PART [current_project]] -mode out_of_context {extra_option}")
+    self._pyvado_session.process.send(f"synth_design -top {ooc_module_name} -part [get_property PART [current_project]] -mode out_of_context {extra_option}")
 
   def implementation(self, impl_name : str = "impl_1", num_jobs : int = 32):
     """
@@ -153,7 +150,7 @@ class FlowManager(PyvadoManager):
     if impl_name == "":
       raise ValueError("impl name is not set")
     
-    self._vivado_process.send([
+    self._pyvado_session.process.send([
       f"launch_runs {impl_name} -jobs {num_jobs}", 
       f"wait_on_run {impl_name}"
     ])
@@ -179,7 +176,7 @@ class FlowManager(PyvadoManager):
     if impl_name == "":
       raise ValueError("impl name is not set")
     
-    self._vivado_process.send([
+    self._pyvado_session.process.send([
       f"launch_runs {impl_name} -to_step write_bitstream -jobs {num_jobs}",
       f"wait_on_run {impl_name}"
     ])

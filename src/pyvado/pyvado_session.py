@@ -1,7 +1,7 @@
 """
 File name: pyvado_session
 Author: aureliesa
-Version: 1.0.0
+Version: 1.1.0
 License: GPL-3.0-or-later
 Dependencies: pathlib, pyvado_error
 Descriptions: Vivado Python API wrapper
@@ -9,6 +9,7 @@ Descriptions: Vivado Python API wrapper
 
 from pathlib import Path
 from .pyvado_error import PyvadoError
+from .pyvado_process import PyvadoProcess
 
 class OpenState():
   """
@@ -60,6 +61,8 @@ class PyvadoSession():
     simulator open manager
   saif : EntityOpenManager
     saif open manager
+  session : PyvadoProcess
+    vivado process
 
   Methods
   -------
@@ -69,10 +72,16 @@ class PyvadoSession():
     return project directory
   get_project_name() -> Path
     return project name (without .xpr)
+  get_part(filter : str = "") -> list[str]
+    get hardware installed parts
+  get_boards(filter : str = "") -> list[str]
+    get installed boards
   """
 
   def __init__(self,
-               project_path : str = ""
+               project_path : str = "",
+               vivado_command : str = "vivado",
+               process_timeout : int = 600
               ):
     """
     Class Constructor
@@ -98,6 +107,15 @@ class PyvadoSession():
     self.__simulator = OpenState()
 
     self.__saif = OpenState()
+
+    self.__vivado_process = PyvadoProcess(
+      vivado_command = vivado_command,
+      timeout = process_timeout
+    )
+
+  @property
+  def process(self) -> PyvadoProcess:
+    return self.__vivado_process
 
   def set_project_path(self, path : str):
     
@@ -174,4 +192,75 @@ class PyvadoSession():
       raise PyvadoError("No project path")
 
     return self.__project_path.stem
+  
+  def version(self) -> str:
+    """
+    get vivado version
+
+    Returns
+    -------
+    str:
+      vivado version
+    """
+
+    self.__vivado_process.send("puts [version -short]", blocking=False)
+    return self.__vivado_process.read().strip()
+  
+  def get_parts(self, filter : str = "") -> list[str] : 
+    """
+    get hardware installed parts
+    
+    Parameters
+    ----------
+    filter : str = ""
+      part filter
+
+    Returns
+    -------
+    list[str]
+      list of parts
+    """
+
+    if filter == "":
+      self.__vivado_process.send("puts [get_parts]", blocking=False)
+    else:
+      filter = filter.replace(' ', '*')
+      self.__vivado_process.send(f"puts [get_parts -filter {{NAME =~ \"*{filter}*\"}}]", blocking=False)
+
+    parts = self.__vivado_process.read()
+    parts = parts.strip()
+
+    if len(parts) == 0:
+      return []
+    else:
+      return parts.split(' ')
+    
+  def get_boards(self, filter : str = "") -> list[str] : 
+    """
+    get installed boards
+    
+    Parameters
+    ----------
+    filter : str = ""
+      part filter
+
+    Returns
+    -------
+    list[str]
+      list of parts
+    """
+
+    if filter == "":
+      self.__vivado_process.send("puts [get_boards]", blocking=False)
+    else:
+      filter = filter.replace(' ', '*')
+      self.__vivado_process.send(f"puts [get_boards -filter {{NAME =~ \"*{filter}*\"}}]", blocking=False)
+
+    parts = self.__vivado_process.read()
+    parts = parts.strip()
+
+    if len(parts) == 0:
+      return []
+    else:
+      return parts.split(' ')
   

@@ -3,11 +3,10 @@ File name: report_manager
 Author: aureliesa
 Version: 1.0.0
 License: GPL-3.0-or-later
-Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib
+Dependencies: pyvado_session, pyvado_manager, pyvado_error, pathlib
 Descriptions: Pyvado synthesis flow manager
 """
 
-from ..pyvado_process import PyvadoProcess
 from ..pyvado_error import PyvadoError
 from ..pyvado_session import PyvadoSession
 from .pyvado_manager import PyvadoManager
@@ -35,12 +34,10 @@ class ReportManager(PyvadoManager):
   """
 
   def __init__(self, 
-               vivado_process : PyvadoProcess, 
                pyvado_session : PyvadoSession
               ):
     
     super().__init__(
-      vivado_process = vivado_process, 
       pyvado_session = pyvado_session
     )
 
@@ -67,14 +64,14 @@ class ReportManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open")
 
-    self._vivado_process.send("puts [get_runs]", blocking=False)
+    self._pyvado_session.process.send("puts [get_runs]", blocking=False)
 
-    runs = self._vivado_process.read().strip().split(" ")
+    runs = self._pyvado_session.process.read().strip().split(" ")
 
     available_run = []
     for run in runs:
-      self._vivado_process.send(f"puts [get_property STATUS [get_runs {run}]]", blocking=False)
-      status = self._vivado_process.read().strip()
+      self._pyvado_session.process.send(f"puts [get_property STATUS [get_runs {run}]]", blocking=False)
+      status = self._pyvado_session.process.read().strip()
       if status != "Not started":
         available_run.append(run)
 
@@ -103,7 +100,7 @@ class ReportManager(PyvadoManager):
     if not run_name in runs:
       raise PyvadoError(f"{run_name} is not available")
     
-    self._vivado_process.send(f"open_run {run_name}")
+    self._pyvado_session.process.send(f"open_run {run_name}")
 
     self.__run = run_name
 
@@ -113,7 +110,7 @@ class ReportManager(PyvadoManager):
     """
 
     if not self.__run is None:
-      self._vivado_process.send("close_design")
+      self._pyvado_session.process.send("close_design")
       self.__run = None
 
   def utilization(self, output_path : str = ".", hierarchical : bool = True):
@@ -147,9 +144,9 @@ class ReportManager(PyvadoManager):
     output_path = Path(output_path).resolve()
 
     if hierarchical:
-      self._vivado_process.send(f"report_utilization -hierarchical -file {output_path}")
+      self._pyvado_session.process.send(f"report_utilization -hierarchical -file {output_path}")
     else:
-      self._vivado_process.send(f"report_utilization -file {output_path}")
+      self._pyvado_session.process.send(f"report_utilization -file {output_path}")
 
   def power(self, output_path : str = "."):
     """
@@ -179,7 +176,7 @@ class ReportManager(PyvadoManager):
 
     output_path = Path(output_path).resolve()
 
-    self._vivado_process.send(f"report_power -file {output_path}")
+    self._pyvado_session.process.send(f"report_power -file {output_path}")
 
   def set_activity(self, file_path : str, strip_path : str = ""):
     """
@@ -217,6 +214,6 @@ class ReportManager(PyvadoManager):
       raise ValueError(f"{saif_file} must use .saif extension")
     
     if strip_path == "":
-      self._vivado_process.send(f"read_saif {saif_file}")
+      self._pyvado_session.process.send(f"read_saif {saif_file}")
     else:
-      self._vivado_process.send(f"read_saif -strip_path {strip_path} {saif_file}")
+      self._pyvado_session.process.send(f"read_saif -strip_path {strip_path} {saif_file}")

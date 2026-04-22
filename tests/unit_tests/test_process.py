@@ -74,7 +74,7 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_proc = MagicMock()
     mock_popen.return_value = mock_proc
 
-    mock_time.side_effect = [0, 0, 70]
+    mock_time.side_effect = [0, 0, 0, 0, 0, 70]
 
     
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
@@ -158,7 +158,7 @@ class TestPyvadoProcess(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
-    
+    mock_proc.poll.return_value = None
 
     vp = PyvadoProcess()
     vp.close()

@@ -3,11 +3,10 @@ File name: tcl_manager
 Author: aureliesa
 Version: 0.1.0
 License: GPL-3.0-or-later
-Dependencies: pyvado_process, pyvado_session, pyvado_manager
+Dependencies: pyvado_session, pyvado_manager
 Descriptions: Pyvado TCL command manager
 """
 
-from ..pyvado_process import PyvadoProcess
 from ..pyvado_session import PyvadoSession
 from .pyvado_manager import PyvadoManager
 
@@ -23,13 +22,12 @@ class TCLManager(PyvadoManager):
   """
 
   def __init__(self, 
-               vivado_process : PyvadoProcess, 
                pyvado_session : PyvadoSession
               ):
     
-    super().__init__(
-      vivado_process = vivado_process, 
-      pyvado_session = pyvado_session)
+    super().__init__( 
+      pyvado_session = pyvado_session
+    )
     
   def run(self, cmd : str | list[str], blocking : bool = True):
     """
@@ -43,7 +41,7 @@ class TCLManager(PyvadoManager):
       block function until all command are executed
     """
 
-    self._vivado_process.send(
+    self._pyvado_session.process.send(
       cmd = cmd,
       blocking = blocking
     )
@@ -58,4 +56,4 @@ class TCLManager(PyvadoManager):
       vivado output line
     """
 
-    return self._vivado_process.read()
+    return self._pyvado_session.process.read()

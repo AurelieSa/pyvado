@@ -1,14 +1,13 @@
 """
 File name: hardware_manager
 Author: aureliesa
-Version: 1.0.0
+Version: 1.1.0
 License: GPL-3.0-or-later
-Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib
+Dependencies: pyvado_session, pyvado_manager, pyvado_error, pathlib
 Descriptions: Pyvado synthesis flow manager
 """
 
 from .pyvado_manager import PyvadoManager
-from ..pyvado_process import PyvadoProcess
 from ..pyvado_session import PyvadoSession
 from ..pyvado_error import PyvadoError
 from pathlib import Path
@@ -42,13 +41,11 @@ class HardwareManager(PyvadoManager):
     Completly deploy bitstream on FPGA from open hardware to device programming
   """
 
-  def __init__(self, 
-               vivado_process : PyvadoProcess, 
+  def __init__(self,  
                pyvado_session : PyvadoSession
               ):
     
     super().__init__(
-      vivado_process=vivado_process, 
       pyvado_session=pyvado_session
     )
 
@@ -57,7 +54,7 @@ class HardwareManager(PyvadoManager):
     open hardware manager
     """
 
-    self._vivado_process.send("open_hw_manager")
+    self._pyvado_session.process.send("open_hw_manager")
     self._pyvado_session.hardware.open()
 
   def close_hardware(self):
@@ -66,7 +63,7 @@ class HardwareManager(PyvadoManager):
     """
 
     if self._pyvado_session.hardware.is_open():
-      self._vivado_process.send("close_hw_manager")
+      self._pyvado_session.process.send("close_hw_manager")
       self._pyvado_session.hardware.close()
 
   def connect_server(self, url : str = ""):
@@ -92,7 +89,7 @@ class HardwareManager(PyvadoManager):
     else:
       cmd = f"connect_hw_server -url {url}"
 
-    self._vivado_process.send(cmd=cmd)
+    self._pyvado_session.process.send(cmd=cmd)
     self._pyvado_session.hw_server.open()
 
   def disconnect_server(self):
@@ -101,7 +98,7 @@ class HardwareManager(PyvadoManager):
     """
 
     if self._pyvado_session.hw_server.is_open():
-      self._vivado_process.send("disconnect_hw_server")
+      self._pyvado_session.process.send("disconnect_hw_server")
       self._pyvado_session.hw_server.close()
 
 
@@ -117,7 +114,7 @@ class HardwareManager(PyvadoManager):
     if not self._pyvado_session.hw_server.is_open():
       raise PyvadoError("Vivado hardware manager and hardware server must be open")
     
-    self._vivado_process.send("open_hw_target")
+    self._pyvado_session.process.send("open_hw_target")
     self._pyvado_session.target.open()
 
   def close_target(self):
@@ -126,7 +123,7 @@ class HardwareManager(PyvadoManager):
     """
 
     if self._pyvado_session.target.is_open():
-      self._vivado_process.send("close_hw_target")
+      self._pyvado_session.process.send("close_hw_target")
       self._pyvado_session.target.close()
 
   def set_bitstream(self, bitstream_path : str = ""):
@@ -157,8 +154,8 @@ class HardwareManager(PyvadoManager):
     
     if bitstream_path == "":
       if self._pyvado_session.project.is_open():
-        self._vivado_process.send("puts [get_property DIRECTORY [current_run -implementation]]", blocking=False)
-        toplevel_path = self._vivado_process.read().strip()
+        self._pyvado_session.process.send("puts [get_property DIRECTORY [current_run -implementation]]", blocking=False)
+        toplevel_path = self._pyvado_session.process.read().strip()
         
         bitstream_files = list(Path(f"{toplevel_path}/").glob("*.bit"))
 
@@ -177,7 +174,7 @@ class HardwareManager(PyvadoManager):
     if not bitstream_path.exists():
       raise PyvadoError(f"{bitstream_path} does not exist")
 
-    self._vivado_process.send(f"set_property PROGRAM.FILE {{{bitstream_path}}} [current_hw_device]")
+    self._pyvado_session.process.send(f"set_property PROGRAM.FILE {{{bitstream_path.as_posix()}}} [current_hw_device]")
 
   def program_device(self):
     """
@@ -192,7 +189,7 @@ class HardwareManager(PyvadoManager):
     if not self._pyvado_session.target.is_open():
       raise PyvadoError("No hardware target to programm")
     
-    self._vivado_process.send("program_hw_devices [current_hw_device]")
+    self._pyvado_session.process.send("program_hw_devices [current_hw_device]")
 
   def deploy(self, bitstream_path : str = "", server_url : str = ""):
     """

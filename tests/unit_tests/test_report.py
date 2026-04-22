@@ -33,6 +33,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -58,6 +60,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "Not started\n",
@@ -82,6 +86,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "Not started\n",
@@ -103,6 +109,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -130,6 +138,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -155,6 +165,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -185,6 +197,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -212,6 +226,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -233,6 +249,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -256,6 +274,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -289,6 +309,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -320,6 +342,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -353,6 +377,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -374,6 +400,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -397,6 +425,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -430,6 +460,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -462,6 +494,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -483,6 +517,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -506,6 +542,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -536,6 +574,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
@@ -568,6 +608,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",
       "complete\n",
@@ -598,6 +640,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.poll.return_value = None
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "synth_1 impl_1\n",

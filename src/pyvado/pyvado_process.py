@@ -10,6 +10,8 @@ Descriptions: Vivado subprocess
 import subprocess
 import time
 from .pyvado_error import PyvadoError
+import os
+from pathlib import Path
 
 class PyvadoProcess:
   """
@@ -62,7 +64,23 @@ class PyvadoProcess:
     while not "PYVADO_COMMAND_DONE" in self.__process.stdout.readline():
       if time.time() - start > self.__timeout:
         raise TimeoutError("Command execution duration has exceed timeout")
+      
+    self.send("puts [version -short]", blocking=False)
+    version = self.read().strip()
+    
+      
+    # Liste de suspects habituels
+    search_paths = [
+        Path.home() / ".Xilinx/Vivado",
+        Path(os.environ.get("XILINX_VIVADO", "/opt/Xilinx/Vivado")),
+    ]
+    found = []
+    for p in search_paths:
+        # On cherche n'importe quel dossier nommé 'board_files' ou 'board_store'
+        found.extend([str(d) for d in p.rglob("*board_store*") if d.is_dir() and version in str(d)])
 
+    found = ' '.join([f'\"{r}\"' for r in found])
+    self.send(f"set_param board.repoPaths [list {found}]")
     
 
   def send(self, cmd : str | list[str], blocking : bool = True):

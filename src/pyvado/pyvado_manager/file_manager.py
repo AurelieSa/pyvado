@@ -1,7 +1,7 @@
 """
 File name: file_manager
 Author: aureliesa
-Version: 1.0.0
+Version: 1.1.0
 License: GPL-3.0-or-later
 Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib, shlex
 Descriptions: Pyvado synthesis flow manager
@@ -54,7 +54,6 @@ class FileManager(PyvadoManager):
   ]
 
   def __init__(self, 
-               vivado_process : PyvadoProcess, 
                pyvado_session : PyvadoSession
               ):
     """
@@ -69,7 +68,6 @@ class FileManager(PyvadoManager):
     """
 
     super().__init__(
-      vivado_process = vivado_process, 
       pyvado_session = pyvado_session
     )
 
@@ -121,9 +119,9 @@ class FileManager(PyvadoManager):
         raise PyvadoError(f"{f} does not exists")
       
       if f.suffix == ".xdc" or f.suffix == ".sdc":
-        constrainst_files.append(str(f))
+        constrainst_files.append(f.as_posix())
       else:
-        design_files.append(str(f))
+        design_files.append(f.as_posix())
 
     force = '-force' if force else ''
     file = "import_files" if import_file else "add_files"
@@ -142,7 +140,7 @@ class FileManager(PyvadoManager):
     cmd.append("update_compile_order")
 
 
-    self._vivado_process.send(
+    self._pyvado_session.process.send(
       cmd = cmd,
       blocking = True
     )
@@ -154,7 +152,7 @@ class FileManager(PyvadoManager):
 
       new_files = ' '.join([f for f in files if Path(f).resolve().name in file_name and not Path(f).suffix in [".xdc", ".sdc"] ])
 
-      self._vivado_process.send(cmd=[
+      self._pyvado_session.process.send(cmd=[
         f"set_property used_in_synthesis {used_in_synth} [get_files {{{new_files}}}]",
         f"set_property used_in_simulation {used_in_sim} [get_files {{{new_files}}}]"
       ])
@@ -197,12 +195,12 @@ class FileManager(PyvadoManager):
       return
 
     for f in file_path:
-      if not str(f) in files:
+      if not f.as_posix() in files:
         raise PyvadoError(f"{f} is not into the project")
       
     files = ' '.join([f.as_posix() for f in file_path])
     
-    self._vivado_process.send([
+    self._pyvado_session.process.send([
       f"set_property used_in_synthesis {used_in_synth} [get_files {{{files}}}]",
       f"set_property used_in_simulation {used_in_sim} [get_files {{{files}}}]"
     ])
@@ -329,7 +327,7 @@ class FileManager(PyvadoManager):
 
     cmd.append("update_compile_order")
 
-    self._vivado_process.send(cmd=cmd)
+    self._pyvado_session.process.send(cmd=cmd)
 
   def get_files(self) -> list[str]:
     """
@@ -349,8 +347,8 @@ class FileManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Project must be open to add files")
 
-    self._vivado_process.send("puts [get_files]", blocking=False)
-    files = self._vivado_process.read()
+    self._pyvado_session.process.send("puts [get_files]", blocking=False)
+    files = self._pyvado_session.process.read()
 
     if "No files matched" in files:
       return []

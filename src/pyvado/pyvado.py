@@ -58,47 +58,39 @@ class Pyvado:
       os.makedirs(".pyvadoLog")
 
 
-    self.__vivado_process = PyvadoProcess(
-      vivado_command = vivado_command,
-      timeout = process_timeout
-    )
+    
 
     self.__session = PyvadoSession(
-      project_path = project_path
+      project_path = project_path,
+      vivado_command=vivado_command,
+      process_timeout=process_timeout
     )
 
     self.__project = ProjectManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
     self.__flow = FlowManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
     self.__files = FileManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
     self.__hardware = HardwareManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
     self.__report = ReportManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
     self.__simulator = SimulationManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
     self.__tcl = TCLManager(
-      vivado_process = self.__vivado_process,
       pyvado_session = self.session
     )
 
@@ -154,4 +146,4 @@ class Pyvado:
     if self.__session.simulator.is_open():
       self.simulator.close()
       
-    self.__vivado_process.close()
+    self.__session.process.close()

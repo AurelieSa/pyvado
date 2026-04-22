@@ -86,6 +86,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
@@ -116,6 +118,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     file_name = "./tests/unit_tests/files/bar.vhd"
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -149,6 +153,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
@@ -179,6 +185,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     file_name = "./tests/unit_tests/files/bar.vhd"
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -389,6 +397,8 @@ class TestPyvadoFileManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       f"{os.path.abspath(file_name)}\n",
@@ -442,6 +452,8 @@ class TestPyvadoFileManager(unittest.TestCase):
     file_name = "./tests/unit_tests/files/foo.xdc"
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",

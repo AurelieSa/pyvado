@@ -158,3 +158,75 @@ class TestPyvadoOpen(unittest.TestCase):
     calls = [c.args[0] for c in mock_proc.stdin.write.call_args_list]
 
     self.assertNotIn(f"close_project\n", calls)
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_create_project_when_project_path_does_not_exist(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pv = Pyvado()
+
+    with self.assertRaises(ValueError):
+      pv.project.create("./foo", "foo")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_create_project_when_project_path_is_not_dir(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pv = Pyvado()
+
+    with self.assertRaises(ValueError):
+      pv.project.create("./test/unit_tests/files/bar.vhd", "foo")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_create_project_when_part_and_board_are_none(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pv = Pyvado()
+
+    with self.assertRaises(ValueError):
+      pv.project.create("./test/unit_tests/files/", "foo", part=None, board=None)
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_create_project_when_part_and_board_are_not_none(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.return_value = "PYVADO_COMMAND_DONE\n"
+    mock_proc.poll.return_value = None
+
+    pv = Pyvado()
+
+    with self.assertRaises(ValueError):
+      pv.project.create("./test/unit_tests/files/", "foo", part="part", board="board")
+
+  @patch('pyvado.pyvado_process.subprocess.Popen')
+  def test_create_project_when_part_and_board_are_not_none(self, mock_popen):
+
+    mock_proc = MagicMock()
+    mock_popen.return_value = mock_proc
+
+    mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
+      "digilent:nexys-4-ddr digilent:nexys-A7-100t\n"
+    ]
+    mock_proc.poll.return_value = None
+
+    pv = Pyvado()

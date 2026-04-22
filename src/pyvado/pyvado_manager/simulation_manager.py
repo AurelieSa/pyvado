@@ -1,13 +1,12 @@
 """
 File name: simulation_manager
 Author: aureliesa
-Version: 0.1.0
+Version: 1.0.0
 License: GPL-3.0-or-later
-Dependencies: pyvado_process, pyvado_session, pyvado_manager, pyvado_error, pathlib, re
+Dependencies: pyvado_session, pyvado_manager, pyvado_error, pathlib, re
 Descriptions: Pyvado synthesis flow manager
 """
 
-from ..pyvado_process import PyvadoProcess
 from ..pyvado_error import PyvadoError
 from ..pyvado_session import PyvadoSession
 from .pyvado_manager import PyvadoManager
@@ -36,13 +35,11 @@ class SimulationManager(PyvadoManager):
     close saif file
   """
 
-  def __init__(self, 
-               vivado_process : PyvadoProcess, 
+  def __init__(self,  
                pyvado_session : PyvadoSession
               ):
     
     super().__init__(
-      vivado_process = vivado_process, 
       pyvado_session = pyvado_session
     )
 
@@ -61,7 +58,7 @@ class SimulationManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Vadio project must be open")
     
-    self._vivado_process.send("launch_simulation")
+    self._pyvado_session.process.send("launch_simulation")
     self._pyvado_session.simulator.open()
     self.restart()
 
@@ -75,7 +72,7 @@ class SimulationManager(PyvadoManager):
       if self.__saif_open:
         self.close_saif() # close saif only open by simulator
 
-      self._vivado_process.send("close_sim")
+      self._pyvado_session.process.send("close_sim")
       self._pyvado_session.simulator.close()
 
       
@@ -98,7 +95,7 @@ class SimulationManager(PyvadoManager):
     if not self._pyvado_session.project.is_open():
       raise PyvadoError("Vivado project must be open")
     
-    self._vivado_process.send([
+    self._pyvado_session.process.send([
       f"set_property top {module_name} [get_filesets sim_1]",
       "update_compile_order -fileset sources_1",
       "set_property top_lib xil_defaultlib [get_filesets sim_1]"
@@ -117,7 +114,7 @@ class SimulationManager(PyvadoManager):
     if not self._pyvado_session.simulator.is_open():
       raise PyvadoError("Simulator must be open")
     
-    self._vivado_process.send("restart")
+    self._pyvado_session.process.send("restart")
 
   def run(self, duration : str = "all"):
     """
@@ -145,7 +142,7 @@ class SimulationManager(PyvadoManager):
     if not re.match(pattern, duration):
       raise PyvadoError(f"{duration} has no correct format")
     
-    self._vivado_process.send(f"run {duration}")
+    self._pyvado_session.process.send(f"run {duration}")
 
   def log_saif(self, output_path : str = ".", scope : str = ""):
     """
@@ -188,7 +185,7 @@ class SimulationManager(PyvadoManager):
       cmd.append(f"log_saif [get_objects -r *]")
     
 
-    self._vivado_process.send(cmd=cmd)
+    self._pyvado_session.process.send(cmd=cmd)
 
     self._pyvado_session.saif.open()
     self.__saif_open = True
@@ -199,6 +196,6 @@ class SimulationManager(PyvadoManager):
     """
 
     if self._pyvado_session.saif.is_open():
-      self._vivado_process.send("close_saif")
+      self._pyvado_session.process.send("close_saif")
       self._pyvado_session.saif.close()
       self.__saif_open = False

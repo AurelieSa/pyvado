@@ -430,6 +430,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -462,6 +464,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -493,6 +497,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
@@ -528,6 +534,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -561,6 +569,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
@@ -599,6 +609,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
 
     mock_proc.stdout.readline.side_effect = [
       "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
+      "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n",
@@ -636,6 +648,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",
@@ -676,6 +690,8 @@ class TestPyvadoHardwareManager(unittest.TestCase):
     mock_popen.return_value = mock_proc
 
     mock_proc.stdout.readline.side_effect = [
+      "PYVADO_COMMAND_DONE\n",
+      "2025.1.2\n",
       "PYVADO_COMMAND_DONE\n",
       "PYVADO_COMMAND_DONE\n", 
       "PYVADO_COMMAND_DONE\n",

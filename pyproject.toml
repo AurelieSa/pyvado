@@ -1,28 +1,22 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
-name = "Pyvado"
+name = "pyvado"
 version = "1.0.0"
 authors = [
   {name="AurelieSa"}
 ]
-description = "Python vivado control API for synthesis, simulatin and report automation."
+description = "Python vivado control API for synthesis, simulation and report automation."
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "GPL-3.0-only"}
 
+classifiers = [
+    "Programming Language :: Python :: 3", 
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)", 
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)"
+]
+keywords = ["vivado", "fpga", "tcl", "automation", "vhdl", "verilog"]
 
 dependencies = []
-
-keywords = ["vivado", "fpga", "tcl", "automation", "vhdl", "verilog"]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Operating System :: OS Independent",
-    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
-]
 
 [project.urls]
 "Homepage" = "https://github.com/AurelieSa/pyvado"
@@ -30,3 +24,10 @@ classifiers = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pyvado"]
+
+[tool.hatch.build.targets.sdist]
+include = ["LICENSE"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
