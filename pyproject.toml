@@ -26,7 +26,11 @@ dependencies = []
 packages = ["src/pyvado"]
 
 [tool.hatch.build.targets.sdist]
-include = ["LICENSE"]
+include = [
+    "LICENSE",
+    "src/pyvado",
+    "README.md",
+]
 
 [build-system]
 requires = ["hatchling"]
