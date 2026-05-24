@@ -72,18 +72,18 @@ class PyvadoProcess:
       
     self.__process.stdin.write("puts [version -short]\n")
     self.__process.stdin.flush()
-    version = self.__process.stdout.readline()
-    
+    version = self.__process.stdout.readli
       
     # Liste de suspects habituels
     search_paths = [
-        Path.home() / ".Xilinx/Vivado",
+        Path.home() / f".Xilinx/Vivado/{version}/",
         Path(os.environ.get("XILINX_VIVADO", "/opt/Xilinx/Vivado")),
     ]
     found = []
     for p in search_paths:
         # On cherche n'importe quel dossier nommé 'board_files' ou 'board_store'
-        found.extend([str(d) for d in p.rglob("*board_store*") if d.is_dir() and version in str(d)])
+        found.extend([str(d) for d in p.glob("**/board_store") if d.is_dir() and version in str(d)])
+        found.extend([str(d) for d in p.glob("**/board_files") if d.is_dir() and version in str(d)])
 
     found = ' '.join([f'\"{r}\"' for r in found])
     self.send(f"set_param board.repoPaths [list {found}]")

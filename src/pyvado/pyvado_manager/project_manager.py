@@ -153,7 +153,7 @@ class ProjectManager(PyvadoManager):
     ])
 
     if part is None:
-      self._pyvado_session.process.send(f"set_property board_part {hw_given} [current_project]", blocking=False)
+      self._pyvado_session.process.send(f"set_property board_part {hw_given} [current_project]")
       
       while True:
         if "Project part" in (s:=self._pyvado_session.process.read()):

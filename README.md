@@ -109,7 +109,7 @@ For more comprehensive tutorials, see example.
 - [X] run behavioral simulation
 - [X] generate report
 - [X] vectorized simulation and vectorized power report
-- [ ] create vivado project
+- [X] create vivado project
 - [ ] multiple vivado execution
 
 ## Roadmap
